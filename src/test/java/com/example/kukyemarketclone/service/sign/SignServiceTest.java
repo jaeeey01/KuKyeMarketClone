@@ -6,10 +6,7 @@ import com.example.kukyemarketclone.dto.sign.SignUpRequest;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
-import com.example.kukyemarketclone.exception.LoginFailureException;
-import com.example.kukyemarketclone.exception.MemberEmailAlreadyExistsException;
-import com.example.kukyemarketclone.exception.MemberNicknameAlreadyExistsException;
-import com.example.kukyemarketclone.exception.RoleNotFoundException;
+import com.example.kukyemarketclone.exception.*;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.role.RoleRepository;
 import org.junit.jupiter.api.Test;
@@ -130,7 +127,7 @@ class SignServiceTest {
     }
 
     private Member createMember(){
-        return new Member("email","password","username","nickanme",emptyList());
+        return new Member("email","password","username","nickname",emptyList());
     }
 
 }

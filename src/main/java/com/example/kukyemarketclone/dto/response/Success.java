@@ -1,4 +1,4 @@
-package com.example.kukyemarketclone.controller.response;
+package com.example.kukyemarketclone.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -34,7 +34,7 @@ public class SignService {
     }
 
     public SignInResponse signIn(SignInRequest req){
-        Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(req,member);
         String subject = createSubject(member);
         String accessToken = tokenService.createAccessToken(subject);

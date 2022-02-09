@@ -1,6 +1,6 @@
 package learning;
 
-import com.example.kukyemarketclone.controller.response.Response;
+import com.example.kukyemarketclone.dto.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

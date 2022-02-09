@@ -1,6 +1,6 @@
 package com.example.kukyemarketclone.controller.sign;
 
-import com.example.kukyemarketclone.controller.response.Response;
+import com.example.kukyemarketclone.dto.response.Response;
 import com.example.kukyemarketclone.dto.sign.SignInRequest;
 import com.example.kukyemarketclone.dto.sign.SignUpRequest;
 import com.example.kukyemarketclone.service.sign.SignService;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.example.kukyemarketclone.controller.response.Response.success;
+import static com.example.kukyemarketclone.dto.response.Response.success;
 
 @RestController //객체 반환시 JSON으로 변환
 @RequiredArgsConstructor
@@ -22,10 +22,10 @@ public class SignController {
 
     @PostMapping("/api/sign-up")
     @ResponseStatus(HttpStatus.CREATED)//회원가입 성공시 201 코드
-
-    //요청 받는 JSON바디를 객체로 변환 : @RequestBody
-    //Request 객체의 필드 값 검증 : @Valid
     public Response signUp(@Valid @RequestBody SignUpRequest req){
+        //요청 받는 JSON 바디를 객체로 변환 : @RequestBody
+        //Request 객체의 필드 값 검증 : @Valid
+
         signService.signUp(req);
         return success();
     }
