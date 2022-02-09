@@ -4,6 +4,7 @@ import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.Email;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class SignUpRequest {
 
     //형식 위반시 MethodArgumentNotValidException 예외 발생
