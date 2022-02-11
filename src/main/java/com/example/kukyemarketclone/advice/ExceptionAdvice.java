@@ -29,6 +29,18 @@ public class ExceptionAdvice {
         return Response.failure(-1000,"오류가 발생하였습니다");
     }
 
+    @ExceptionHandler(AuthenticationEntryPointException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)// 401
+    public Response authenticationEntryPoint(){
+        return Response.failure(-1001,"인증되지 않은 사용자 입니다");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)// 403
+    public Response accessDeniedException(){
+        return Response.failure(-1002,"접근이 거부되었습니다");
+    }
+
     //요청 객체의 validation 수행 시 MethodArgumentNotValidException 발생
     //
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -66,4 +78,6 @@ public class ExceptionAdvice {
     public Response RoleNotFoundException(){
         return Response.failure(-1008,"요청한 권한 등급을 찾을 수 없습니다");
     }
+
+
 }
