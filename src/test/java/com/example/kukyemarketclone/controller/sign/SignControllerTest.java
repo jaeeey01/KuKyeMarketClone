@@ -3,6 +3,9 @@ package com.example.kukyemarketclone.controller.sign;
 import com.example.kukyemarketclone.dto.sign.SignInRequest;
 import com.example.kukyemarketclone.dto.sign.SignInResponse;
 import com.example.kukyemarketclone.dto.sign.SignUpRequest;
+import com.example.kukyemarketclone.factory.dto.SignInRequestFactory;
+import com.example.kukyemarketclone.factory.dto.SignInResponseFactory;
+import com.example.kukyemarketclone.factory.dto.SignUpRequestFactory;
 import com.example.kukyemarketclone.service.sign.SignService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +48,7 @@ class SignControllerTest {
     @Test
     void signUpTest() throws Exception {
         //given
-        SignUpRequest req = new SignUpRequest("email@email.com","123456a!","username","nickname");
+        SignUpRequest req = SignUpRequestFactory.createSignUpRequest("email@email.com","123456a!","username","nickname");
         
         //when,then
         mockMvc.perform(
@@ -60,8 +63,8 @@ class SignControllerTest {
     @Test
     void signInTest() throws Exception {
         //given
-        SignInRequest req = new SignInRequest("email@email.com","123456a!");
-        given(signService.signIn(req)).willReturn(new SignInResponse("access","refresh"));
+        SignInRequest req = SignInRequestFactory.createSignInRequest("email@email.com","123456a!");
+        given(signService.signIn(req)).willReturn(SignInResponseFactory.createSignInResponse("access","refresh"));
 
         //when, then
         mockMvc.perform(
@@ -78,7 +81,7 @@ class SignControllerTest {
     @Test
     void ignoreNullValueInJsonResponseTest() throws Exception {//응답 결과로 반환되는 JSON문자열 올바르게 제거 되는지 확인
         //given
-        SignUpRequest req = new SignUpRequest("email@email.com","123456a!","username","nickname");
+        SignUpRequest req = SignUpRequestFactory.createSignUpRequest("email@email.com","123456a!","username","nickname");
 
         //when, then
         mockMvc.perform(

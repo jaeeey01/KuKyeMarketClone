@@ -7,6 +7,7 @@ import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.exception.*;
+import com.example.kukyemarketclone.factory.dto.SignInRequestFactory;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.role.RoleRepository;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+import static com.example.kukyemarketclone.factory.dto.SignUpRequestFactory.createSignUpRequest;
+import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMember;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -94,7 +97,7 @@ class SignServiceTest {
         given(tokenService.createRefreshToken(anyString())).willReturn("refresh");
 
         //when
-        SignInResponse res = signService.signIn(new SignInRequest("email","password"));
+        SignInResponse res = signService.signIn(SignInRequestFactory.createSignInRequest("email","password"));
 
         //then
         assertThat(res.getAccessToken()).isEqualTo("access");
@@ -107,7 +110,7 @@ class SignServiceTest {
         given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
 
         //when, then
-        assertThatThrownBy(() -> signService.signIn(new SignInRequest("email","password")))
+        assertThatThrownBy(() -> signService.signIn(SignInRequestFactory.createSignInRequest("email","password")))
                 .isInstanceOf(LoginFailureException.class);
     }
 
@@ -118,16 +121,8 @@ class SignServiceTest {
         given(passwordEncoder.matches(anyString(),anyString())).willReturn(false);
 
         //when, then
-        assertThatThrownBy(() -> signService.signIn(new SignInRequest("email","password")))
+        assertThatThrownBy(() -> signService.signIn(SignInRequestFactory.createSignInRequest("email","password")))
                 .isInstanceOf(LoginFailureException.class);
-    }
-
-    private SignUpRequest createSignUpRequest(){
-        return new SignUpRequest("email","password","username","nickname");
-    }
-
-    private Member createMember(){
-        return new Member("email","password","username","nickname",emptyList());
     }
 
 }

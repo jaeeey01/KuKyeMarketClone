@@ -4,6 +4,7 @@ import com.example.kukyemarketclone.dto.sign.SignInRequest;
 import com.example.kukyemarketclone.dto.sign.SignInResponse;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
+import com.example.kukyemarketclone.factory.dto.SignInRequestFactory;
 import com.example.kukyemarketclone.init.TestInitDB;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.service.sign.SignService;
@@ -65,7 +66,7 @@ class MemberControllerIntegrationTest {
     void deleteTest() throws Exception{
         //given
         Member member = memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(MemberNotFoundException::new);
-        SignInResponse signRes = signService.signIn(new SignInRequest(initDB.getMember1Email(),initDB.getPassword()));
+        SignInResponse signRes = signService.signIn(SignInRequestFactory.createSignInRequest(initDB.getMember1Email(),initDB.getPassword()));
 
         //when, then
         mockMvc.perform(
@@ -77,7 +78,7 @@ class MemberControllerIntegrationTest {
     void deleteByAdminTest() throws Exception{
         //given
         Member member = memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(MemberNotFoundException::new);
-        SignInResponse adminSignInRes = signService.signIn(new SignInRequest(initDB.getAdminEmail(),initDB.getPassword()));
+        SignInResponse adminSignInRes = signService.signIn(SignInRequestFactory.createSignInRequest(initDB.getAdminEmail(),initDB.getPassword()));
 
         //when, then
         mockMvc.perform(
@@ -102,7 +103,7 @@ class MemberControllerIntegrationTest {
     void deleteAccessDeniedByNotResourceOwnerTest() throws Exception{
         //given
         Member member = memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(MemberNotFoundException::new);
-        SignInResponse signInRes = signService.signIn(new SignInRequest(initDB.getMember2Email(),initDB.getPassword()));
+        SignInResponse signInRes = signService.signIn(SignInRequestFactory.createSignInRequest(initDB.getMember2Email(),initDB.getPassword()));
 
         //when,then
         mockMvc.perform( //남의 자원 접근권한 없음 = CustomAccessDeniedHandler 작동
@@ -116,7 +117,7 @@ class MemberControllerIntegrationTest {
     void deleteAccessDeniedByRefreshTokenTest() throws Exception{
         //given
         Member member= memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(MemberNotFoundException::new);
-        SignInResponse signInRes = signService.signIn(new SignInRequest(initDB.getMember1Email(),initDB.getPassword()));
+        SignInResponse signInRes = signService.signIn(SignInRequestFactory.createSignInRequest(initDB.getMember1Email(),initDB.getPassword()));
 
         //when, then
         mockMvc.perform(    // 정상 사용자, Refresh 토큰으로 접근시 제한 = CustomAccessDeniedHandler 작동

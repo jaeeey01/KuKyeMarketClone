@@ -7,6 +7,8 @@ import com.example.kukyemarketclone.exception.LoginFailureException;
 import com.example.kukyemarketclone.exception.MemberEmailAlreadyExistsException;
 import com.example.kukyemarketclone.exception.MemberNicknameAlreadyExistsException;
 import com.example.kukyemarketclone.exception.RoleNotFoundException;
+import com.example.kukyemarketclone.factory.dto.SignInRequestFactory;
+import com.example.kukyemarketclone.factory.dto.SignUpRequestFactory;
 import com.example.kukyemarketclone.service.sign.SignService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +46,7 @@ public class signControllerAdviceTest {
     @Test
     void signInLoginFailureExceptionTest()throws Exception {
         //given
-        SignInRequest req = new SignInRequest("email@email.com","123456a!");
+        SignInRequest req = SignInRequestFactory.createSignInRequest("email@email.com","123456a!");
         given(signService.signIn(any())).willThrow(LoginFailureException.class);
 
         //when, then
@@ -59,7 +61,7 @@ public class signControllerAdviceTest {
     @Test
     void signInMethodArgumentNotValidExceptionTest()throws Exception{
         //given
-        SignInRequest req = new SignInRequest("email","1234567");
+        SignInRequest req = SignInRequestFactory.createSignInRequest("email","1234567");
 
         //when,then
         mockMvc.perform(
@@ -73,7 +75,7 @@ public class signControllerAdviceTest {
     @Test
     void signUpMemberEmailAlreadyExistsExceptionTest()throws Exception {
         //given
-        SignUpRequest req = new SignUpRequest("email@email.com","123456a!","username","nickname");
+        SignUpRequest req = SignUpRequestFactory.createSignUpRequest();
         doThrow(MemberEmailAlreadyExistsException.class).when(signService).signUp(any());
 
         //when, then
@@ -87,7 +89,7 @@ public class signControllerAdviceTest {
     @Test
     void signUpMemberNicknameAlreadyExistsExceptionTest()throws Exception{//void 반환형 일 경우 검증
         //given
-        SignUpRequest req = new SignUpRequest("email@email.com","123456a!","username","nickname");
+        SignUpRequest req = SignUpRequestFactory.createSignUpRequest();
         doThrow(MemberNicknameAlreadyExistsException.class).when(signService).signUp(any());
 
         //when, then
@@ -101,7 +103,7 @@ public class signControllerAdviceTest {
     @Test
     void signUpRoleNotFountExceptionTest () throws Exception{
         //given
-        SignUpRequest req = new SignUpRequest("email@email.com","123456a!","username","nickname");
+        SignUpRequest req = SignUpRequestFactory.createSignUpRequest();
         //발생할 예외클래스 명시, when을 이용하여 예외가 발생할 객체의 메소드 지정
         doThrow(RoleNotFoundException.class).when(signService).signUp(any());
 
@@ -116,7 +118,7 @@ public class signControllerAdviceTest {
     @Test
     void signUpMethodArgumentNotValidExceptionTest() throws Exception{// 제약조건 검증
         //given
-        SignUpRequest req = new SignUpRequest("","","","");
+        SignUpRequest req = SignUpRequestFactory.createSignUpRequest("","","","");
 
         //when, then
         mockMvc.perform(

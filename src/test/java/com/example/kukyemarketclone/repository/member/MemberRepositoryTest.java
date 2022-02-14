@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMember;
+import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMemberWithRoles;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -219,18 +221,5 @@ class MemberRepositoryTest {
         em.clear();// 캐쉬를 비움
     }
 
-    /* 임의의 Member Entity를 생성하여 반환
-    * createMemberWithRoles, createMember, createMember
-    * */
-    private Member createMemberWithRoles(List<Role> roles){
-        return new Member("email","password","username","nickname",roles);
-    }
 
-    private Member createMember(String email, String password, String username, String nickname){
-        return new Member(email,password,username,nickname,emptyList());
-    }
-
-    private Member createMember(){
-        return new Member("email","password","username","nickname",emptyList());
-    }
 }

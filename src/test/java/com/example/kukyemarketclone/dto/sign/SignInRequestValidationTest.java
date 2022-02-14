@@ -6,6 +6,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.Set;
+
+import static com.example.kukyemarketclone.factory.dto.SignInRequestFactory.*;
 import  static java.util.stream.Collectors.toSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +20,7 @@ public class SignInRequestValidationTest {
     @Test
     void validateTest(){
         //given
-        SignInRequest req = createRequest();
+        SignInRequest req = createSignInRequest();
 
         //when
         Set<ConstraintViolation<SignInRequest>> validate = validator.validate(req);
@@ -31,7 +33,7 @@ public class SignInRequestValidationTest {
     void invalidateByNotFormattedEmailTest(){
         //given
         String invalidValue = "email";
-        SignInRequest req = createRequestWithEmail(invalidValue);
+        SignInRequest req = createSignInRequestWithEmail(invalidValue);
 
         //when
         Set<ConstraintViolation<SignInRequest>> validate = validator.validate(req);
@@ -48,7 +50,7 @@ public class SignInRequestValidationTest {
     void invalidateByEmptyEmailTest(){
         //given
         String invalidValue = null;
-        SignInRequest req = createRequestWithEmail(invalidValue);
+        SignInRequest req = createSignInRequestWithEmail(invalidValue);
 
         //when
         Set<ConstraintViolation<SignInRequest>> validate = validator.validate(req);
@@ -62,7 +64,7 @@ public class SignInRequestValidationTest {
     void invalidateByBlankEmailTest(){
         //given
         String invalidValue = " ";
-        SignInRequest req = createRequestWithEmail(invalidValue);
+        SignInRequest req = createSignInRequestWithEmail(invalidValue);
 
         //when
         Set<ConstraintViolation<SignInRequest>> validate = validator.validate(req);
@@ -76,7 +78,7 @@ public class SignInRequestValidationTest {
     void invalidateByEmptyPasswordTest(){
         //given
         String invalidValue = null;
-        SignInRequest req = createRequestWithPassword(invalidValue);
+        SignInRequest req = createSignInRequestWithPassword(invalidValue);
 
         //when
         Set<ConstraintViolation<SignInRequest>> validate = validator.validate(req);
@@ -91,7 +93,7 @@ public class SignInRequestValidationTest {
     void invalidateByBlankPasswordTest(){
         //given
         String invalidValue = "   ";
-        SignInRequest req = createRequestWithPassword(invalidValue);
+        SignInRequest req = createSignInRequestWithPassword(invalidValue);
 
         //when
         Set<ConstraintViolation<SignInRequest>> validate = validator.validate(req);
@@ -102,18 +104,5 @@ public class SignInRequestValidationTest {
 
     }
 
-    //전달받은 패스워드 외에 정상 요청 객체 생성 팩토리 메소드
-    private SignInRequest createRequestWithPassword(String password) {
-        return new SignInRequest("email@email.com",password);
-    }
 
-    // 전달받은 이메일 외에 정상 요청 객체 생성 팩토리 메소드
-    private SignInRequest createRequestWithEmail(String email) {
-        return new SignInRequest(email,"123456a!");
-    }
-
-    //정상적인 요청 객체 생성 팩토리 메소드
-    private SignInRequest createRequest() {
-        return new SignInRequest("email@email.com","123456a!");
-    }
 }
