@@ -1,6 +1,6 @@
 package com.example.kukyemarketclone.config.security;
 
-import com.example.kukyemarketclone.service.sign.TokenService;
+import com.example.kukyemarketclone.config.token.TokenHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends 하여 설정작업 수행
 
     //토큰을 통해 사용자 인증을 위한 JwtAuthenticationFilter에 필요한 의존성
-    private final TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
 
     //토큰을 통해 사용자 인증을 위한 JwtAuthenticationFilter에 필요한 의존성
     //토큰에 저장된 subject(userId)로 사용자 정보 조회 목적
@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                 .and()
                     //토큰으로 사용자를 인증하기 위해 직접 정의한 JwtAuthenticationFilter를  UsernamePasswordAuthenticationFilter 이전 위치에 등록
                     //JwtAuthenticationFilter는 필요한 의존성인 TokenService와 CustomUserDetailsService를 주입 받음
-                    .addFilterBefore(new JwtAuthenticationFilter(tokenService,userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper,userDetailsService), UsernamePasswordAuthenticationFilter.class);
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.kukyemarketclone.service.sign;
 
+import com.example.kukyemarketclone.config.token.TokenHelper;
 import com.example.kukyemarketclone.dto.sign.RefreshTokenResponse;
 import com.example.kukyemarketclone.dto.sign.SignInRequest;
 import com.example.kukyemarketclone.dto.sign.SignInResponse;
@@ -23,7 +24,9 @@ public class SignService {
     private final MemberRepository memberRepository; // 사용자 조회 및 등록 목적
     private final RoleRepository roleRepository;    //사용자 기본권한 부여 목적
     private final PasswordEncoder passwordEncoder; //비밀번호 암호화
-    private final TokenService tokenService; //토큰 발급
+
+    private final TokenHelper accessTokenHelper;    //주입 전략에 의해 타입이 동일한 여러 개의 빈에 대해서는,
+    private final TokenHelper refreshTokenHelper;   //빈의 이름과 매핑되는 변수 명에 빈을 주입 받음(TokenConfig 메소드명 과 일치)
 
     @Transactional
     public void signUp(SignUpRequest req){
@@ -37,8 +40,8 @@ public class SignService {
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(req,member);
         String subject = createSubject(member);
-        String accessToken = tokenService.createAccessToken(subject);
-        String refrashToken = tokenService.createRefreshToken(subject);
+        String accessToken = accessTokenHelper.createToken(subject);
+        String refrashToken = refreshTokenHelper.createToken(subject);
         return new SignInResponse(accessToken,refrashToken);
     }
 
@@ -59,8 +62,8 @@ public class SignService {
     //refreshToken을 이용한 accessToken 재발급
     public RefreshTokenResponse refreshToken(String rToken){
         validateRefreshToken(rToken);
-        String subject = tokenService.extractRefreshTokenSubject(rToken); //검증된 refreshToken에서 subject 추출
-        String accessToken = tokenService.createAccessToken(subject);
+        String subject = refreshTokenHelper.extractSubject(rToken); //검증된 refreshToken에서 subject 추출
+        String accessToken = accessTokenHelper.createToken(subject);
         return new RefreshTokenResponse(accessToken);
     }
 
@@ -69,7 +72,7 @@ public class SignService {
     }
 
     private void validateRefreshToken(String rToken){
-        if(!tokenService.validateRefreshToken(rToken)){
+        if(!refreshTokenHelper.validate(rToken)){
             throw new AuthenticationEntryPointException();
         }
     }

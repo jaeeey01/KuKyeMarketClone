@@ -1,7 +1,7 @@
 package com.example.kukyemarketclone.config.security;
 
 
-import com.example.kukyemarketclone.service.sign.TokenService;
+import com.example.kukyemarketclone.config.token.TokenHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     * 그 이전에 필터 등록을 해야 정상적으로 인증 수행 가능
      * */
 
-    private final TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService userDetailsService;
 
     @Override
@@ -46,11 +46,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     }
 
     private boolean validateToken(String token){
-        return token != null && tokenService.validateAccessToken(token);
+        return token != null && accessTokenHelper.validate(token);
     }
 
     private void setAuthentication(String type, String token){
-        String userId = tokenService.extractAccessTokenSubject(token);
+        String userId = accessTokenHelper.extractSubject(token);
         CustomUserDetails userDetails = userDetailsService.loadUserByUsername(userId);
         SecurityContextHolder.getContext().setAuthentication(new CustomAuthenticationToken(type, userDetails, userDetails.getAuthorities()));
     }
