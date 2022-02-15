@@ -39,24 +39,14 @@ public class AuthHelper {//사용자 인증 정보를 추출하기 위해 도움
                 .collect(Collectors.toSet());
     }
 
-    public boolean isAccessTokenType(){
-        return "access".equals(((CustomAuthenticationToken) getAuthentication()).getType());
-    }
-
-    public boolean isRefreshTokenType(){
-        return "refresh".equals(((CustomAuthenticationToken) getAuthentication()).getType());
-    }
-
     private CustomUserDetails getUserDetails(){
         return (CustomUserDetails) getAuthentication().getPrincipal();
     }
-
 
     /*getAuthentication
     * 인증되지 않은 사용자여도 spring security에서 등록해준 필터에 의해 AnonymousAuthenticationToken을 발급 받기 때문에
     * getAuthentication()의 반환 값이 우리가 직접 정의한 CustomAuthenticationToken일 때만 인증 된 것으로 판별
     * */
-
     private Authentication getAuthentication(){
         return SecurityContextHolder.getContext().getAuthentication();
     }

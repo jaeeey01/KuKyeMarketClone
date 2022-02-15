@@ -6,10 +6,7 @@ import com.example.kukyemarketclone.dto.sign.SignUpRequest;
 import com.example.kukyemarketclone.service.sign.SignService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -35,4 +32,13 @@ public class SignController {
     public Response signIn(@Valid @RequestBody SignInRequest req){
         return success(signService.signIn(req)); // 정상 로그인시 토큰으로 응답
     }
+
+
+    @PostMapping("/api/refresh-token")
+    @ResponseStatus(HttpStatus.OK)
+    public Response refreshToken(@RequestHeader(value = "Authorization")String refreshToken){
+        //@RequestHeader 헤더값 전달되지 않았을 때 예외발생 = MissingRequestHeaderException
+        return success(signService.refreshToken(refreshToken));
+    }
+
 }

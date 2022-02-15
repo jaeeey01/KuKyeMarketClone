@@ -15,7 +15,7 @@ public class MemberGuard {//지금 요청한 사용자가 인증 되었는지, �
     private final AuthHelper authHelper;
 
     public boolean check(Long id){
-        return authHelper.isAuthenticated() && authHelper.isAccessTokenType() && hasAuthority(id);
+        return authHelper.isAuthenticated() && hasAuthority(id);
     }
 
     private boolean hasAuthority(Long id){

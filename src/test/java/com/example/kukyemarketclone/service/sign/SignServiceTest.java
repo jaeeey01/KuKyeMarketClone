@@ -1,5 +1,6 @@
 package com.example.kukyemarketclone.service.sign;
 
+import com.example.kukyemarketclone.dto.sign.RefreshTokenResponse;
 import com.example.kukyemarketclone.dto.sign.SignInRequest;
 import com.example.kukyemarketclone.dto.sign.SignInResponse;
 import com.example.kukyemarketclone.dto.sign.SignUpRequest;
@@ -123,6 +124,34 @@ class SignServiceTest {
         //when, then
         assertThatThrownBy(() -> signService.signIn(SignInRequestFactory.createSignInRequest("email","password")))
                 .isInstanceOf(LoginFailureException.class);
+    }
+
+    @Test
+    void refreshTokenTest(){
+        //given
+        String refreshToken = "refreshToken";
+        String subject = "subject";
+        String accessToken = "accessToken";
+        given(tokenService.validateRefreshToken(refreshToken)).willReturn(true);
+        given(tokenService.extractRefreshTokenSubject(refreshToken)).willReturn(subject);
+        given(tokenService.createAccessToken(subject)).willReturn(accessToken);
+
+        //when
+        RefreshTokenResponse res = signService.refreshToken(refreshToken);
+
+        //then
+        assertThat(res.getAccessToken()).isEqualTo(accessToken);
+    }
+
+    @Test
+    void refreshTokenExceptionByInvalidTokenTest(){
+        //given
+        String refreshToken = "refreshToken";
+        given(tokenService.validateRefreshToken(refreshToken)).willReturn(false);
+
+        //when, then
+        assertThatThrownBy(() -> signService.refreshToken(refreshToken))
+                .isInstanceOf(AuthenticationEntryPointException.class);
     }
 
 }

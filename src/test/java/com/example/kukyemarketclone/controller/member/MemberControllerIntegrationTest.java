@@ -123,7 +123,7 @@ class MemberControllerIntegrationTest {
         mockMvc.perform(    // 정상 사용자, Refresh 토큰으로 접근시 제한 = CustomAccessDeniedHandler 작동
                 delete("/api/members/{id}",member.getId()).header("Authorization",signInRes.getRefreshToken()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(redirectedUrl("/exception/entry-point"));
     }
 }
 

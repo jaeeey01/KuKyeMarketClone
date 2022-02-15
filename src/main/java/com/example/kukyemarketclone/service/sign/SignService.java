@@ -1,5 +1,6 @@
 package com.example.kukyemarketclone.service.sign;
 
+import com.example.kukyemarketclone.dto.sign.RefreshTokenResponse;
 import com.example.kukyemarketclone.dto.sign.SignInRequest;
 import com.example.kukyemarketclone.dto.sign.SignInResponse;
 import com.example.kukyemarketclone.dto.sign.SignUpRequest;
@@ -17,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class SignService {
 
     private final MemberRepository memberRepository; // 사용자 조회 및 등록 목적
@@ -32,7 +32,7 @@ public class SignService {
                 roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new),
                 passwordEncoder));
     }
-
+    @Transactional(readOnly = true)
     public SignInResponse signIn(SignInRequest req){
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(req,member);
@@ -56,8 +56,22 @@ public class SignService {
         }
     }
 
+    //refreshToken을 이용한 accessToken 재발급
+    public RefreshTokenResponse refreshToken(String rToken){
+        validateRefreshToken(rToken);
+        String subject = tokenService.extractRefreshTokenSubject(rToken); //검증된 refreshToken에서 subject 추출
+        String accessToken = tokenService.createAccessToken(subject);
+        return new RefreshTokenResponse(accessToken);
+    }
+
     private String createSubject(Member member){
         return String.valueOf(member.getId());
+    }
+
+    private void validateRefreshToken(String rToken){
+        if(!tokenService.validateRefreshToken(rToken)){
+            throw new AuthenticationEntryPointException();
+        }
     }
 
 }

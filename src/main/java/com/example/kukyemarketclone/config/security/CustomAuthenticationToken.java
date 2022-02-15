@@ -14,12 +14,11 @@ public class CustomAuthenticationToken extends AbstractAuthenticationToken {
     * 단순히, 토큰의 타입과 CustomUserDetails, 권한 등급 정보를 가지게 됨
     * 허용되지 않는 동작은 예외를 발생
      * */
-    private String type;
+
     private CustomUserDetails principal;
 
     public CustomAuthenticationToken(String type, CustomUserDetails principal, Collection<? extends GrantedAuthority> authorities ){
         super(authorities);
-        this.type = type;
         this.principal = principal;
         setAuthenticated(true);
     }
@@ -35,7 +34,5 @@ public class CustomAuthenticationToken extends AbstractAuthenticationToken {
         return principal;
     }
 
-    public String getType(){
-        return type;
-    }
+
 }

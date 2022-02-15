@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//세션 유지 안되도록 설정
                 .and()
                     .authorizeRequests() //각 메소드와 URL에 따른 접근 정책 설정
-                        .antMatchers(HttpMethod.POST,"/api/sign-in","/api/sign-up").permitAll()
+                        .antMatchers(HttpMethod.POST,"/api/sign-in","/api/sign-up","/api/refresh-token").permitAll()
                         .antMatchers(HttpMethod.GET,"/api/**").permitAll()
 
                             //access 작성 방식 : @<빈이름>.<메소드명>(<인자, #id로하면 URL에 지정한 {id}가 매핑되어서 인자로 들어감>)
