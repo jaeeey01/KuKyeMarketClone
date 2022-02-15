@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
         // security를 무시할 url 지정
         //'/exception'으로 요청이 들어왔을 경우 Spring security를 거치지 않고
         //바로 컨트롤러로 요청이 도달
-        web.ignoring().mvcMatchers("/exception/**");
+        web.ignoring().mvcMatchers("/exception/**","/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**");
     }
 
     @Override
