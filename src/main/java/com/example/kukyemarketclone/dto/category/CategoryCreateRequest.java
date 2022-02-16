@@ -3,18 +3,29 @@ package com.example.kukyemarketclone.dto.category;
 import com.example.kukyemarketclone.entity.category.Category;
 import com.example.kukyemarketclone.exception.CategoryNotFoundException;
 import com.example.kukyemarketclone.repository.category.CategoryRepository;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Optional;
 
+@ApiModel(value = "카테고리 생성 요청")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryCreateRequest {
 
+    @ApiModelProperty(value = "카테고리 명",notes = "카테고리명을 입력해주세요", required = true, example = "my category")
+    @NotBlank(message = "카테고리 명을 입력해 주세요")
+    @Size(min = 2, max= 30, message = "카테고리 명의 길이는 2글자에서 30글자 입니다")
     private String name;
+
+    @ApiModelProperty(value = "부모 카테고리 아이디", notes = "부모 카테고리 아이디를 입력해주세요", required = true, example = "7")
     private Long parentId;
 
     public static Category toEntity(CategoryCreateRequest req, CategoryRepository categoryRepository) {

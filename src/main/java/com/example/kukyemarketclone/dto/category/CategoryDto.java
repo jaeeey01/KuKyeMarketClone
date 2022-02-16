@@ -26,6 +26,6 @@ public class CategoryDto {
                 c -> c.getParent(), //엔티티의 부모를 반환하는 함수
                 c -> c.getId(), //엔티티의 ID를 반환하는 함수
                 d -> d.getChildren());  //DTO의 자식목록을 반환하는 함수
-        return helper.convert();    //계층형 구조의 CategoryDto리스트 반환
+        return helper.convert();    //계층형 구조의 CategoryDto리스트 반환sssssssssssss
     }
 }
