@@ -47,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                             //access 작성 방식 : @<빈이름>.<메소드명>(<인자, #id로하면 URL에 지정한 {id}가 매핑되어서 인자로 들어감>)
                             //삭제 요청은 본인과 관리자만 수행 가능 : 검증 로직을 수행하기 위해 @memberGuard.check의 반환 결과가 true면 요청 수행
                         .antMatchers(HttpMethod.DELETE,"/api/members/{id}/**").access("@memberGuard.check(#id)")
+                        .antMatchers(HttpMethod.POST,"/api/categories/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.DELETE,"/api/categories/**").hasRole("ADMIN")
                         .anyRequest().hasAnyRole("ADMIN")
                 .and()
                     .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())//5 인증된 사용자가 권한 부족등의 사유로 접근 거부시 작동할 핸들러 지정

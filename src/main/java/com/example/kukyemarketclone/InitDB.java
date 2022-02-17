@@ -1,9 +1,11 @@
 package com.example.kukyemarketclone;
 
+import com.example.kukyemarketclone.entity.category.Category;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.exception.RoleNotFoundException;
+import com.example.kukyemarketclone.repository.category.CategoryRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,7 @@ public class InitDB {
     private final RoleRepository roleRepository;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CategoryRepository categoryRepository;
 
     /*@PostConstruct 메소드에 지정하면, 빈의 생성과 의존성 주입이 끝난 뒤에 수행할 초기화 코드를 지정할 수 있음
     * @Transactional과 같은 AOP가 적용 안됨. @Transactional과 같은 AOP는 빈후처리기에 의해 처리되는데,
@@ -55,6 +58,9 @@ public class InitDB {
     public void initDB(){
         log.info("initialize database");
         initRole();
+        initTestAdmin();
+        initTestMember();
+        initCategory();
     }
 
     private void initRole(){
@@ -79,5 +85,16 @@ public class InitDB {
                   new Member("member2@member.com",passwordEncoder.encode("123456a!"),"member2","member2",
                           List.of(roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new))))
         );
+    }
+
+    private void initCategory() {
+        Category c1 = categoryRepository.save(new Category("category1", null));
+        Category c2 = categoryRepository.save(new Category("category2", c1));
+        Category c3 = categoryRepository.save(new Category("category3", c1));
+        Category c4 = categoryRepository.save(new Category("category4", c2));
+        Category c5 = categoryRepository.save(new Category("category5", c2));
+        Category c6 = categoryRepository.save(new Category("category6", c4));
+        Category c7 = categoryRepository.save(new Category("category7", c3));
+        Category c8 = categoryRepository.save(new Category("category8", null));
     }
 }

@@ -1,9 +1,11 @@
 package com.example.kukyemarketclone.init;
 
+import com.example.kukyemarketclone.entity.category.Category;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.exception.RoleNotFoundException;
+import com.example.kukyemarketclone.repository.category.CategoryRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.role.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class TestInitDB {
     MemberRepository memberRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    CategoryRepository categoryRepository;
 
     private String adminEmail = "admin@admin.com";
     private String member1Email = "member1@member.com";
@@ -34,6 +38,7 @@ public class TestInitDB {
         initRole();
         initTestAdmin();
         initTestMember();
+        initCategory();
 
     }
 
@@ -49,6 +54,12 @@ public class TestInitDB {
                   List.of(roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new),
                           roleRepository.findByRoleType(RoleType.ROLE_ADMIN).orElseThrow(RoleNotFoundException::new)))
         );
+    }
+
+    private void initCategory(){
+        Category category1 = new Category("category1",null);
+        Category category2 = new Category("category2",category1);
+        categoryRepository.saveAll(List.of(category1,category2));
     }
 
     private void initTestMember() {
