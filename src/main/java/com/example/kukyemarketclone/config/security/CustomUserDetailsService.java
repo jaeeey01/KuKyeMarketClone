@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Member member = memberRepository.findById(Long.valueOf(userId))//토큰에서 추출한 사용자의 id를 이용하여 Member 조회
+        Member member = memberRepository.findWithRolesById(Long.valueOf(userId))//토큰에서 추출한 사용자의 id를 이용하여 Member 조회
 
                 //만약 사용자를 찾지 못했다면, 권한이 없고 비어 있는 CustomUserDetails를 생성 반환
                 .orElseGet(() -> new Member(null,null,null,null, List.of()));

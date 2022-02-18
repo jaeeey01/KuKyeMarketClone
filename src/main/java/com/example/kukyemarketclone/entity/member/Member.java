@@ -14,6 +14,16 @@ import static java.util.stream.Collectors.toSet;
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 @Getter
 @Entity
+@NamedEntityGraph(  //연관된 엔티티들을 함께 조회 가능
+        //Member.rolse 그래프에서 Member의 rolrs를 조회
+        name="Member.roles",//엔티티 그래프 이름 설정
+        attributeNodes = @NamedAttributeNode(value = "roles", subgraph = "Member.roles.role"),//함께 조회해야하는 엔티티의 필드명
+
+        //서브그래프 이용시 연관 엔티티의 연관 엔티티까지 함께 조회
+        //Member.roles.role 서브그래프에서 MemberRole의 role 조회
+        subgraphs = @NamedSubgraph(name = "Member.roles.role", attributeNodes = @NamedAttributeNode("role"))
+
+)
 public class Member extends EntityDate {
 
     @Id
