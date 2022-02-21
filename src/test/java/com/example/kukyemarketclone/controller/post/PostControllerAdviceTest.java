@@ -23,8 +23,8 @@ import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -103,4 +103,15 @@ public class PostControllerAdviceTest {
                 .andExpect(jsonPath("$.code").value(-1012));
     }
 
+    @Test
+    void deleteExceptionByPostNotFoundTest() throws  Exception{
+        //given
+        doThrow(PostNotFoundException.class).when(postService).delete(anyLong());
+
+        //when, then
+        mockMvc.perform(
+                delete("/api/posts/{id}",1L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(-1012));
+    }
 }

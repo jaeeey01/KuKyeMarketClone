@@ -56,4 +56,14 @@ public class PostService {
         IntStream.range(0, images.size()).forEach(i -> fileService.upload(fileImages.get(i), images.get(i).getUniqueName()));
     }
 
+    @Transactional
+    public void delete(Long id){
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        deleteImages(post.getImages());
+        postRepository.delete(post);
+    }
+
+    private void deleteImages(List<Image> images){
+        images.stream().forEach(i -> fileService.delete(i.getUniqueName()));
+    }
 }

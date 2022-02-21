@@ -21,8 +21,7 @@ import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,6 +82,19 @@ class PostControllerTest {
                 get("/api/posts/{id}",id))
                 .andExpect(status().isOk());
         verify(postService).read(id);
+    }
+
+    @Test
+    void deleteTest() throws Exception{
+        //given
+        Long id = 1L;
+
+        //when, then
+        mockMvc.perform(
+                delete("/api/posts/{id}",id))
+                .andExpect(status().isOk());
+
+        verify(postService).delete(id);
     }
 
 }
