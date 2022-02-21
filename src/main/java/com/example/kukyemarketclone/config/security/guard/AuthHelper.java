@@ -27,7 +27,7 @@ public class AuthHelper {//사용자 인증 정보를 추출하기 위해 도움
                 getAuthentication().isAuthenticated();
     }
 
-    public Long extactMemberId(){
+    public Long extractMemberId(){
         return Long.valueOf(getUserDetails().getUserId());
     }
 

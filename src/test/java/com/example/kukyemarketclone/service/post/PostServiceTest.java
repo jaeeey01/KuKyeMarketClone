@@ -2,6 +2,8 @@ package com.example.kukyemarketclone.service.post;
 
 import com.example.kukyemarketclone.dto.post.PostCreateRequest;
 import com.example.kukyemarketclone.dto.post.PostDto;
+import com.example.kukyemarketclone.dto.post.PostUpdateRequest;
+import com.example.kukyemarketclone.entity.post.Image;
 import com.example.kukyemarketclone.entity.post.Post;
 import com.example.kukyemarketclone.exception.CategoryNotFoundException;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
@@ -26,8 +28,10 @@ import java.util.stream.IntStream;
 
 import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
 import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.createPostCreateRequestWithImages;
+import static com.example.kukyemarketclone.factory.dto.PostUpdateRequestFactory.createPostUpdateRequest;
 import static com.example.kukyemarketclone.factory.entity.CategoryFactory.createCategory;
 import static com.example.kukyemarketclone.factory.entity.ImageFactory.createImage;
+import static com.example.kukyemarketclone.factory.entity.ImageFactory.createImageWithIdAndOriginName;
 import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMember;
 import static com.example.kukyemarketclone.factory.entity.PostFactory.createPostWithImages;
 import static java.util.stream.Collectors.toList;
@@ -149,5 +153,37 @@ class PostServiceTest {
         //when, then
         assertThatThrownBy( () -> postService.delete(1L)).isInstanceOf(PostNotFoundException.class);
     }
+
+    @Test
+    void updateTest(){
+        //given
+        Image a = createImageWithIdAndOriginName(1L,"a.png");
+        Image b = createImageWithIdAndOriginName(2L,"b.png");
+        Post post = createPostWithImages(List.of(a,b));
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
+        MockMultipartFile cFile = new MockMultipartFile("c","c.png",MediaType.IMAGE_PNG_VALUE,"c".getBytes());
+        PostUpdateRequest postUpdateRequest = createPostUpdateRequest("title","content",1000L,List.of(cFile),List.of(a.getId()));
+
+        //when
+        postService.update(1L,postUpdateRequest);
+
+        //then
+        List<Image> images =post.getImages();
+        List<String> originName = images.stream().map( i -> i.getOriginName()).collect(toList());
+        assertThat(images.size()).isEqualTo(2);
+        assertThat(originName).contains(b.getOriginName(),cFile.getOriginalFilename());
+
+        verify(fileService,times(1)).upload(any(),anyString());
+        verify(fileService,times(1)).delete(anyString());
+    }
+    @Test
+    void updateExceptionByPostNotFoundTest(){
+        //given
+        given(postRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
+        //when, then
+        assertThatThrownBy(() -> postService.update(1L, createPostUpdateRequest("title","content",1234L,List.of(),List.of())))
+                .isInstanceOf(PostNotFoundException.class);
+        }
 
 }

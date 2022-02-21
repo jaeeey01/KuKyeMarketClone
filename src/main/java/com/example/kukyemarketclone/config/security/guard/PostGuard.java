@@ -27,7 +27,7 @@ public class PostGuard {//요청자가 관리자 이거나 게시글의 작성�
 
     private boolean isResourceOwner(Long id){
         Post post = postRepository.findById(id).orElseThrow(() -> {throw new AccessDeniedException("");});
-        Long memberId = authHelper.extactMemberId();
+        Long memberId = authHelper.extractMemberId();
         return post.getMember().getId().equals(memberId);
     }
 

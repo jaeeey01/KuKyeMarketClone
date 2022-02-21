@@ -1,8 +1,6 @@
 package com.example.kukyemarketclone.service.post;
 
-import com.example.kukyemarketclone.dto.post.PostCreateRequest;
-import com.example.kukyemarketclone.dto.post.PostCreateResponse;
-import com.example.kukyemarketclone.dto.post.PostDto;
+import com.example.kukyemarketclone.dto.post.*;
 import com.example.kukyemarketclone.entity.post.Image;
 import com.example.kukyemarketclone.entity.post.Post;
 import com.example.kukyemarketclone.exception.PostNotFoundException;
@@ -66,4 +64,15 @@ public class PostService {
     private void deleteImages(List<Image> images){
         images.stream().forEach(i -> fileService.delete(i.getUniqueName()));
     }
+
+    @Transactional
+    public PostUpdateResponse update(Long id, PostUpdateRequest req){
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Post.ImageUpdatedResult result = post.update(req);
+        uploadImages(result.getAddedImages(),result.getAddedImageFiles());
+        deleteImages(result.getDeletedImages());
+        return new PostUpdateResponse(id);
+
+    }
+
 }

@@ -19,7 +19,7 @@ public class MemberGuard {//지금 요청한 사용자가 인증 되었는지, �
     }
 
     private boolean hasAuthority(Long id){
-        Long memberId = authHelper.extactMemberId();
+        Long memberId = authHelper.extractMemberId();
         Set<RoleType> memberRoles = authHelper.extractMemberRoles();
         return id.equals(memberId) || memberRoles.contains(RoleType.ROLE_ADMIN);
     }

@@ -27,7 +27,7 @@ public class AssignMemberIdAspect {
     public void assignMemberId(JoinPoint joinPoint){//파라미터로 전닯다은 JoinPoint를 이용하여 호출되어야할 본래의 메소드에 대한 정보 가져옴
         Arrays.stream(joinPoint.getArgs())// joinPoint.getArgs()를 이용하여 전달되는 인자들을 확인하고
                 .forEach(arg -> getMethod(arg.getClass(),"setMemberId")//setMemberId로 정의된 타입이 있다면 memberId를 주입
-                        .ifPresent(setMemberId -> invokeMethod(arg, setMemberId, authHelper.extactMemberId())));
+                        .ifPresent(setMemberId -> invokeMethod(arg, setMemberId, authHelper.extractMemberId())));
     }
 
     /** getMethod, invokeMethod

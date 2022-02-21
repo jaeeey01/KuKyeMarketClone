@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -111,6 +112,26 @@ public class PostControllerAdviceTest {
         //when, then
         mockMvc.perform(
                 delete("/api/posts/{id}",1L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(-1012));
+    }
+
+    @Test
+    void updateExceptionByOstNotFoundTest() throws Exception{
+        //given
+        given(postService.update(anyLong(), any())).willThrow(PostNotFoundException.class);
+
+        //when, then
+        mockMvc.perform(
+                multipart("/api/posts/{id}",1L)
+                .param("title","title")
+                .param("content","content")
+                .param("price","1234")
+                .with(requestPostProcessor ->{
+                    requestPostProcessor.setMethod("PUT");
+                    return requestPostProcessor;
+                })
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value(-1012));
     }
