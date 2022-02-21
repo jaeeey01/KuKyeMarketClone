@@ -42,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                 .and()
                     .authorizeRequests() //각 메소드와 URL에 따른 접근 정책 설정
                         .antMatchers(HttpMethod.POST,"/api/sign-in","/api/sign-up","/api/refresh-token").permitAll()
+                        .antMatchers(HttpMethod.GET,"/image/**").permitAll()
                         .antMatchers(HttpMethod.GET,"/api/**").permitAll()
 
                             //access 작성 방식 : @<빈이름>.<메소드명>(<인자, #id로하면 URL에 지정한 {id}가 매핑되어서 인자로 들어감>)
@@ -49,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                         .antMatchers(HttpMethod.DELETE,"/api/members/{id}/**").access("@memberGuard.check(#id)")
                         .antMatchers(HttpMethod.POST,"/api/categories/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.DELETE,"/api/categories/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.POST,"/api/posts").authenticated()
                         .anyRequest().hasAnyRole("ADMIN")
                 .and()
                     .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())//5 인증된 사용자가 권한 부족등의 사유로 접근 거부시 작동할 핸들러 지정

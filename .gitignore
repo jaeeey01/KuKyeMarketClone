@@ -27,6 +27,7 @@ out/
 !**/src/test/**/out/
 
 application-secret.yml
+/src/test/resources/static/*
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
