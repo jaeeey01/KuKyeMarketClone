@@ -28,9 +28,11 @@ import java.util.List;
 
 import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
 import static com.example.kukyemarketclone.factory.dto.SignInRequestFactory.createSignInRequest;
+import static com.example.kukyemarketclone.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,6 +114,17 @@ public class PostControllerIntegrationTest {// aop를 통한 게시글 작성자
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/exception/entry-point"));
+    }
+
+    @Test
+    void readTest() throws Exception{
+        //given
+        Post post = postRepository.save(createPost(member,category));
+
+        //when, then
+        mockMvc.perform(
+                get("/api/posts/{id}",post.getId()))
+                .andExpect(status().isOk());
     }
 
 }

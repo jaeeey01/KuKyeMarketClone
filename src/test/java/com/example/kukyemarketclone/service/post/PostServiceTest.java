@@ -1,8 +1,11 @@
 package com.example.kukyemarketclone.service.post;
 
 import com.example.kukyemarketclone.dto.post.PostCreateRequest;
+import com.example.kukyemarketclone.dto.post.PostDto;
+import com.example.kukyemarketclone.entity.post.Post;
 import com.example.kukyemarketclone.exception.CategoryNotFoundException;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
+import com.example.kukyemarketclone.exception.PostNotFoundException;
 import com.example.kukyemarketclone.exception.UnsupportedImageFormatException;
 import com.example.kukyemarketclone.repository.category.CategoryRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
@@ -18,7 +21,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 import java.util.stream.IntStream;
 
 import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
@@ -28,9 +31,10 @@ import static com.example.kukyemarketclone.factory.entity.ImageFactory.createIma
 import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMember;
 import static com.example.kukyemarketclone.factory.entity.PostFactory.createPostWithImages;
 import static java.util.stream.Collectors.toList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -98,6 +102,29 @@ class PostServiceTest {
 
         //when, then
         assertThatThrownBy( () -> postService.create(req)).isInstanceOf(UnsupportedImageFormatException.class);
+    }
+
+    @Test
+    void readTest(){
+        //given
+        Post post = createPostWithImages(List.of(createImage(),createImage()));
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
+
+        //when
+        PostDto postDto = postService.read(1L);
+
+        //then
+        assertThat(postDto.getTitle()).isEqualTo(post.getTitle());
+        assertThat(postDto.getImages().size()).isEqualTo(post.getImages().size());
+    }
+
+    @Test
+    void readExceptionByPostNotFoundTest(){
+        //given
+        given(postRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
+        //when, then
+        assertThatThrownBy(() -> postService.read(1L)).isInstanceOf(PostNotFoundException.class);
     }
 
 }

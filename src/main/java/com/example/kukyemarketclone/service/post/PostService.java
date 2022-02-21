@@ -2,8 +2,10 @@ package com.example.kukyemarketclone.service.post;
 
 import com.example.kukyemarketclone.dto.post.PostCreateRequest;
 import com.example.kukyemarketclone.dto.post.PostCreateResponse;
+import com.example.kukyemarketclone.dto.post.PostDto;
 import com.example.kukyemarketclone.entity.post.Image;
 import com.example.kukyemarketclone.entity.post.Post;
+import com.example.kukyemarketclone.exception.PostNotFoundException;
 import com.example.kukyemarketclone.repository.category.CategoryRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.post.PostRepository;
@@ -37,6 +39,10 @@ public class PostService {
         );
         uploadImages(post.getImages(),req.getImages());
         return new PostCreateResponse(post.getId());
+    }
+
+    public PostDto read(Long id){
+        return PostDto.toDto(postRepository.findById(id).orElseThrow(PostNotFoundException::new));
     }
 
     /*uploadImages

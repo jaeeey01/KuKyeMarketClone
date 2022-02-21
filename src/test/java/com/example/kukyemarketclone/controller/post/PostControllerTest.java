@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,6 +71,18 @@ class PostControllerTest {
         //캡처 한 값을 꺼내고, 정상적으로 두건의 이미지가 업로드 된 것인지 검증
         PostCreateRequest capturedRequest = postCreateRequestArgumentCaptor.getValue();
         assertThat(capturedRequest.getImages().size()).isEqualTo(2);
+    }
+
+    @Test
+    void readTest() throws  Exception{
+        //given
+        Long id = 1L;
+
+        //when, then
+        mockMvc.perform(
+                get("/api/posts/{id}",id))
+                .andExpect(status().isOk());
+        verify(postService).read(id);
     }
 
 }

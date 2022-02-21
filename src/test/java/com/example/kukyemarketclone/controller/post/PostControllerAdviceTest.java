@@ -4,6 +4,7 @@ import com.example.kukyemarketclone.advice.ExceptionAdvice;
 import com.example.kukyemarketclone.dto.post.PostCreateRequest;
 import com.example.kukyemarketclone.exception.CategoryNotFoundException;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
+import com.example.kukyemarketclone.exception.PostNotFoundException;
 import com.example.kukyemarketclone.exception.UnsupportedImageFormatException;
 import com.example.kukyemarketclone.service.post.PostService;
 import org.aspectj.lang.annotation.Before;
@@ -20,8 +21,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -87,4 +90,17 @@ public class PostControllerAdviceTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA)
         );
     }
+
+    @Test
+    void readExceptionByPostNotFoundTest() throws Exception{
+        //given
+        given(postService.read(anyLong())).willThrow(PostNotFoundException.class);
+
+        //when, then
+        mockMvc.perform(
+                get("/api/posts/{id}",1L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(-1012));
+    }
+
 }
