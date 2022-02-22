@@ -54,22 +54,22 @@ class CustomPostRepositoryImplTest {
         List<Category> categories =saveCategory(2);
 
         // 0 - (m0, c0)
-        // 1 - (m1, c1) * 생성된 게시물
+        // 1 - (m1, c1)
         // 2 - (m2, c0)
-        // 3 - (m0, c1)
+        // 3 - (m0, c1) * 검색한 게시물
         // 4 - (m1, c0)
-        // 5 - (m2, c1) * 생성된 게시물
+        // 5 - (m2, c1) * 검색한 게시물
         // 6 - (m0, c0)
-        // 7 - (m1, c1) * 생성된 게시물
+        // 7 - (m1, c1)
         // 8 - (m2, c0)
-        // 9 - (m0, c1)
+        // 9 - (m0, c1) * 검색한 게시물
       List<Post> posts = IntStream.range(0,10)
               .mapToObj( i -> postRepository.save(createPost(members.get(i % 3), categories.get(i % 2))))
               .collect(toList());
       clear();
 
-      List<Long> categoryIds = List.of(categories.get(1).getId());
-      List<Long> memberIds = List.of(members.get(0).getId(),members.get(2).getId());
+      List<Long> categoryIds = List.of(categories.get(1).getId());  //c1 조회
+      List<Long> memberIds = List.of(members.get(0).getId(),members.get(2).getId()); //m0 , m2 조회
       int sizePerPage = 2;
       long expectedTotalElements = 3;
 
@@ -88,13 +88,13 @@ class CustomPostRepositoryImplTest {
         assertThat(page1.getContent().size()).isEqualTo(1);// 1page 게시물 수
 
         // 9 - (m0, c1)
-        // 5 - (m2, c1) * 생성된 게시물
-        assertThat(page0.getContent().get(0).getId()).isEqualTo(posts.get(9).getId());
-        assertThat(page0.getContent().get(1).getId()).isEqualTo(posts.get(5).getId());
+        // 5 - (m2, c1)
+        assertThat(page0.getContent().get(0).getId()).isEqualTo(posts.get(9).getId());//0page에 첫번째 게시물과 게시물 9번 일치여부
+        assertThat(page0.getContent().get(1).getId()).isEqualTo(posts.get(5).getId());//0page에 두번째 게시물과 게시물 5번 일치여부
         assertThat(page0.hasNext()).isTrue();//다음페이지 여부
 
         // 3 - (m0, c1)
-        assertThat(page1.getContent().get(0).getId()).isEqualTo(posts.get(3).getId());
+        assertThat(page1.getContent().get(0).getId()).isEqualTo(posts.get(3).getId()); //1page에 첫번째 게시물과 게시물 3번 일치여부
         assertThat(page1.hasNext()).isFalse();
 
 
