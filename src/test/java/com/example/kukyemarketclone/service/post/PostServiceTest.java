@@ -2,6 +2,7 @@ package com.example.kukyemarketclone.service.post;
 
 import com.example.kukyemarketclone.dto.post.PostCreateRequest;
 import com.example.kukyemarketclone.dto.post.PostDto;
+import com.example.kukyemarketclone.dto.post.PostListDto;
 import com.example.kukyemarketclone.dto.post.PostUpdateRequest;
 import com.example.kukyemarketclone.entity.post.Image;
 import com.example.kukyemarketclone.entity.post.Post;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -28,6 +30,7 @@ import java.util.stream.IntStream;
 
 import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
 import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.createPostCreateRequestWithImages;
+import static com.example.kukyemarketclone.factory.dto.PostReadConditionFactory.createPostReadCondition;
 import static com.example.kukyemarketclone.factory.dto.PostUpdateRequestFactory.createPostUpdateRequest;
 import static com.example.kukyemarketclone.factory.entity.CategoryFactory.createCategory;
 import static com.example.kukyemarketclone.factory.entity.ImageFactory.createImage;
@@ -185,5 +188,18 @@ class PostServiceTest {
         assertThatThrownBy(() -> postService.update(1L, createPostUpdateRequest("title","content",1234L,List.of(),List.of())))
                 .isInstanceOf(PostNotFoundException.class);
         }
+
+    @Test
+    void readALlTest(){
+        //given
+        given(postRepository.findAllByCondition(any())).willReturn(Page.empty());
+
+        //when
+        PostListDto postListDto = postService.readAll(createPostReadCondition(1,1));
+
+        //then
+        assertThat(postListDto.getPostList().size()).isZero();
+    }
+
 
 }

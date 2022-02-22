@@ -2,6 +2,7 @@ package com.example.kukyemarketclone.controller.post;
 
 import com.example.kukyemarketclone.aop.AssignMemberId;
 import com.example.kukyemarketclone.dto.post.PostCreateRequest;
+import com.example.kukyemarketclone.dto.post.PostReadCondition;
 import com.example.kukyemarketclone.dto.post.PostUpdateRequest;
 import com.example.kukyemarketclone.dto.response.Response;
 import com.example.kukyemarketclone.service.post.PostService;
@@ -53,5 +54,12 @@ public class PostController {
     public Response update(@ApiParam(value = "게시글 id", required = true)
                                @PathVariable Long id, @Valid @ModelAttribute PostUpdateRequest req){
         return Response.success(postService.update(id, req));
+    }
+
+    @ApiOperation(value = "게시글 목록 조회",notes = "게시글 목록을 조회한다")
+    @GetMapping("/api/posts")
+    @ResponseStatus(HttpStatus.OK)
+    public Response readAll(@Valid PostReadCondition cond){
+        return Response.success(postService.readAll(cond));
     }
 }

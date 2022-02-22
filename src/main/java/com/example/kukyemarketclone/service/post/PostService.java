@@ -75,4 +75,10 @@ public class PostService {
 
     }
 
+    public PostListDto readAll(PostReadCondition cond){
+        return PostListDto.toDto(
+                postRepository.findAllByCondition(cond)
+        );
+    }
+
 }

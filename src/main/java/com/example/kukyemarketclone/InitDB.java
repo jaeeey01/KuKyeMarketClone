@@ -4,9 +4,11 @@ import com.example.kukyemarketclone.entity.category.Category;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
+import com.example.kukyemarketclone.entity.post.Post;
 import com.example.kukyemarketclone.exception.RoleNotFoundException;
 import com.example.kukyemarketclone.repository.category.CategoryRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
+import com.example.kukyemarketclone.repository.post.PostRepository;
 import com.example.kukyemarketclone.repository.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
@@ -37,6 +40,7 @@ public class InitDB {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final CategoryRepository categoryRepository;
+    private final PostRepository postRepository;
 
     /*@PostConstruct 메소드에 지정하면, 빈의 생성과 의존성 주입이 끝난 뒤에 수행할 초기화 코드를 지정할 수 있음
     * @Transactional과 같은 AOP가 적용 안됨. @Transactional과 같은 AOP는 빈후처리기에 의해 처리되는데,
@@ -56,11 +60,12 @@ public class InitDB {
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
     public void initDB(){
-        log.info("initialize database");
         initRole();
         initTestAdmin();
         initTestMember();
         initCategory();
+        initPost();
+        log.info("initialize database");
     }
 
     private void initRole(){
@@ -96,5 +101,14 @@ public class InitDB {
         Category c6 = categoryRepository.save(new Category("category6", c4));
         Category c7 = categoryRepository.save(new Category("category7", c3));
         Category c8 = categoryRepository.save(new Category("category8", null));
+    }
+
+    private void initPost(){
+        Member member = memberRepository.findAll().get(0);
+        Category category = categoryRepository.findAll().get(0);
+        IntStream.range(0,100)
+                .forEach(i -> postRepository.save(
+                        new Post("title" + i, "content" + i, Long.valueOf(i), member, category, List.of())
+                ));
     }
 }

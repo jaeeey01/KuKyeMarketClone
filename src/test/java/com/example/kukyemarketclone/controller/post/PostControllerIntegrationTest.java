@@ -1,6 +1,7 @@
 package com.example.kukyemarketclone.controller.post;
 
 import com.example.kukyemarketclone.dto.post.PostCreateRequest;
+import com.example.kukyemarketclone.dto.post.PostReadCondition;
 import com.example.kukyemarketclone.dto.sign.SignInResponse;
 import com.example.kukyemarketclone.entity.category.Category;
 import com.example.kukyemarketclone.entity.member.Member;
@@ -29,6 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
+import static com.example.kukyemarketclone.factory.dto.PostReadConditionFactory.createPostReadCondition;
 import static com.example.kukyemarketclone.factory.dto.SignInRequestFactory.createSignInRequest;
 import static com.example.kukyemarketclone.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -294,5 +296,20 @@ public class PostControllerIntegrationTest {// aop를 통한 게시글 작성자
                 .header("Authorization",notOwnerSignInRes.getAccessToken()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/exception/access-denied"));
+    }
+
+    @Test
+    void readAllTest() throws Exception{
+        //given
+        PostReadCondition cond = createPostReadCondition(0,1);
+
+        //when, then
+        mockMvc.perform(
+                get("/api/posts")
+                        .param("page",String.valueOf(cond.getPage())).param("size",String.valueOf(cond.getSize()))
+                        .param("categoryId",String.valueOf(1),String.valueOf(2))
+                        .param("memberId",String.valueOf(1),String.valueOf(2))
+        )
+                .andExpect(status().isOk());
     }
 }

@@ -1,10 +1,12 @@
 package com.example.kukyemarketclone.repository.category;
 
+import com.example.kukyemarketclone.config.QuerydslConfig;
 import com.example.kukyemarketclone.entity.category.Category;
 import com.example.kukyemarketclone.exception.CategoryNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.persistence.EntityManager;
@@ -20,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
 class CategoryRepositoryTest {
 
     @Autowired CategoryRepository categoryRepository;

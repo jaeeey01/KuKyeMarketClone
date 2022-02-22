@@ -1,5 +1,6 @@
 package com.example.kukyemarketclone.repository.member;
 
+import com.example.kukyemarketclone.config.QuerydslConfig;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.MemberRole;
 import com.example.kukyemarketclone.entity.member.Role;
@@ -9,6 +10,7 @@ import com.example.kukyemarketclone.repository.role.RoleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.persistence.EntityManager;
@@ -26,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest //JPA관련 TEST만 할 것 : JPA관련 설정이나 Repository들만 스프링빈으로 등록, @Autowired로 주입받음
+@Import(QuerydslConfig.class)
 class MemberRepositoryTest {
 
     /*

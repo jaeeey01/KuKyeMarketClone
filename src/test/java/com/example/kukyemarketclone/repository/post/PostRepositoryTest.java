@@ -1,5 +1,6 @@
 package com.example.kukyemarketclone.repository.post;
 
+import com.example.kukyemarketclone.config.QuerydslConfig;
 import com.example.kukyemarketclone.dto.post.PostUpdateRequest;
 import com.example.kukyemarketclone.entity.category.Category;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -35,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
 public class PostRepositoryTest {
 
     @Autowired PostRepository postRepository;

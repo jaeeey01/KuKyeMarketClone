@@ -1,11 +1,13 @@
 package com.example.kukyemarketclone.repository.role;
 
+import com.example.kukyemarketclone.config.QuerydslConfig;
 import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.exception.RoleNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.persistence.EntityManager;
@@ -17,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
 public class RoleRepositoryTest {
     @Autowired RoleRepository roleRepository;
     @PersistenceContext

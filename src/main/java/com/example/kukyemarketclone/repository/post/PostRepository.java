@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface PostRepository extends JpaRepository<Post,Long> {
+public interface PostRepository extends JpaRepository<Post,Long>, CustomPostRepository {
 
     //각 게시글 조회시 작성자 정보도 같이 보내줄 것, fetch join을 이용 하여 member도 함께 조회
     @Query("SELECT p from Post p JOIN fetch p.member where p.id = :id")
