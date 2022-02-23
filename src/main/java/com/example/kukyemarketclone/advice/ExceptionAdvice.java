@@ -122,5 +122,11 @@ public class ExceptionAdvice {
         return Response.failure(-1014,"파일 업로드에 실패하였습니다");
     }
 
+    @ExceptionHandler(CommentNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response CommentNotFoundException(CommentNotFoundException e){
+        return Response.failure(-1015,"존재 하지 않는 댓글입니다");
+    }
+
 
 }
