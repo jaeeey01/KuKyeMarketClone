@@ -75,21 +75,32 @@ public class Comment extends EntityDate {
         this.deleted = true;//하위 댓글이 남아있어서 실제로 제거할 수 없는 댓글인 경우 이 메소드 호출
     }
 
-    // 상위 댓글로 거슬러 올라가며 실제 제거 가능 댓글 탐색
-    // 상위 댓글이 실제 제거 가능 댓글 일경우 다시 상위 탐색하여 삭제 가능한 지점 찾아냄
+    /* findDeletableCommentByParent
+    * 삭제되어 있는 최상위 부모까지 모두 올라 간 뒤, 해당 지점 부터 점차 내려오면서
+    * 자신의 부모가 삭제가능한지(자식 갯수가 1인지) 확인
+    * 삭제 할 수 있다면, 반환 받았던 상위 댓글 그대로 응답
+    * 삭제 할 수 없다면, 자신을 반환
+    *  = 모든 parent를 다 조회 해둔 뒤에 해당 parent의 children을 조회 하므로
+    *  이런  children 조회 작업은, IN 절을 이용하여 하나의 쿼리로 수행 가능
+    *
+    * 자식의 개수를 뒤늦게 판별하기 때문에 상위 댓글로 올라가는 깊이는 늘어날 수 있지만
+    * 1개의 깊이마다 2개의 쿼리가 생성되는 상황을, 1개의 쿼리만 생성되도록 개선 = 2 * N -> N
+   * */
     private Comment findDeletableCommentByParent(){
-        return isDeletableParent() ? getParent().findDeletableCommentByParent() : this;
+        if(isDeletedParent()){
+            Comment deletableParent = getParent().findDeletableCommentByParent();
+            if(getParent().getChildren().size()==1) return deletableParent;
+        }
+        return this;
     }
 
     private boolean hasChildren(){//하위 댓글 있는지 판별
         return getChildren().size() != 0;
     }
 
-    //현재 댓글의 상위 댓글이 제거 해도 되는지 판별
-    // 부모가 있고, 삭제 처리 받았었고, 자식의 개수가 1이라면 제거 가능
-    //자식의 개수가 1 -> 지금 삭제요청 받은 현재의 댓글 외에, 다른 하위 댓글들은 없는 상황
-    private boolean isDeletableParent(){
-        return getParent() != null && getParent().isDeleted() && getParent().getChildren().size() == 1;
+    //deleted 가 true 이거나 null 체크
+    private boolean isDeletedParent(){
+        return getParent() != null && getParent().isDeleted();
     }
 
     /* jpa 에서 엔티티 조회시

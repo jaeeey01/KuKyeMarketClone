@@ -12,13 +12,14 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
-    properties:
-      hibernate:
-        default_batch_fetch_size: 100 #복잡한 조회 쿼리 작성시 지연 로딩으로 발생해야 하는 쿼리를 IN절로 한번에 모아보냄
+    properties: #26 계층형 댓글 1 - 추가
+      hibernate: #복잡한 조회 쿼리 작성시 지연 로딩으로 발생해야 하는 쿼리를 IN절로 한번에 모아보냄
+        default_batch_fetch_size: 100 #모아 보낼 갯수
   servlet:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
+
 
 
 
