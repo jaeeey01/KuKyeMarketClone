@@ -1,12 +1,14 @@
 package com.example.kukyemarketclone;
 
 import com.example.kukyemarketclone.entity.category.Category;
+import com.example.kukyemarketclone.entity.comment.Comment;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.entity.post.Post;
 import com.example.kukyemarketclone.exception.RoleNotFoundException;
 import com.example.kukyemarketclone.repository.category.CategoryRepository;
+import com.example.kukyemarketclone.repository.comment.CommentRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.post.PostRepository;
 import com.example.kukyemarketclone.repository.role.RoleRepository;
@@ -41,6 +43,7 @@ public class InitDB {
     private final PasswordEncoder passwordEncoder;
     private final CategoryRepository categoryRepository;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     /*@PostConstruct 메소드에 지정하면, 빈의 생성과 의존성 주입이 끝난 뒤에 수행할 초기화 코드를 지정할 수 있음
     * @Transactional과 같은 AOP가 적용 안됨. @Transactional과 같은 AOP는 빈후처리기에 의해 처리되는데,
@@ -65,6 +68,7 @@ public class InitDB {
         initTestMember();
         initCategory();
         initPost();
+        initComment();
         log.info("initialize database");
     }
 
@@ -110,5 +114,18 @@ public class InitDB {
                 .forEach(i -> postRepository.save(
                         new Post("title" + i, "content" + i, Long.valueOf(i), member, category, List.of())
                 ));
+    }
+
+    private void initComment(){
+        Member member = memberRepository.findAll().get(0);
+        Post post = postRepository.findAll().get(0);
+        Comment c1 = commentRepository.save(new Comment("content",member,post,null));
+        Comment c2 = commentRepository.save(new Comment("content", member, post, c1));
+        Comment c3 = commentRepository.save(new Comment("content", member, post, c1));
+        Comment c4 = commentRepository.save(new Comment("content", member, post, c2));
+        Comment c5 = commentRepository.save(new Comment("content", member, post, c2));
+        Comment c6 = commentRepository.save(new Comment("content", member, post, c4));
+        Comment c7 = commentRepository.save(new Comment("content", member, post, c3));
+        Comment c8 = commentRepository.save(new Comment("content", member, post, null));
     }
 }

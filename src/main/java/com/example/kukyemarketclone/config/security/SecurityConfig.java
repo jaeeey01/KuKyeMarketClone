@@ -53,6 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                         .antMatchers(HttpMethod.POST,"/api/posts").authenticated()
                         .antMatchers(HttpMethod.PUT,"/api/posts/{id}").access("@postGuard.check(#id)")
                         .antMatchers(HttpMethod.DELETE,"/api/posts/{id}").access("@postGuard.check(#id)")
+                        .antMatchers(HttpMethod.POST,"/api/comments").authenticated()
+                        .antMatchers(HttpMethod.DELETE,"/api/comments/{id}").access("@commentGuard.check(#id)")
                         .anyRequest().hasAnyRole("ADMIN")
                 .and()
                     .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())//5 인증된 사용자가 권한 부족등의 사유로 접근 거부시 작동할 핸들러 지정

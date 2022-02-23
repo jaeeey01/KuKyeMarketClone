@@ -4,6 +4,7 @@ import com.example.kukyemarketclone.entity.category.Category;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
+import com.example.kukyemarketclone.entity.post.Post;
 import com.example.kukyemarketclone.exception.RoleNotFoundException;
 import com.example.kukyemarketclone.repository.category.CategoryRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
