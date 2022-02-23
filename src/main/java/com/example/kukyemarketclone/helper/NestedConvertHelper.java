@@ -23,7 +23,7 @@ public class NestedConvertHelper<K,E,D> {
     public static <K,E,D> NestedConvertHelper newInstance(List<E> entities, Function<E,D>toDto, Function<E,E> getParent,Function<E,K>getKey, Function<D,List<D>>getChildren){
         //스태틱 메소드 이기 떄문에 메소드 레벨에 제너릭 타입 파라미터 지정
         //전달받은 함수를 이용합 타입 추론에 의해 각각의 제너릭 타입이 추론 될 것
-        return new NestedConvertHelper<K,E,D>(entities,toDto,getParent,getKey,getChildren);
+        return new NestedConvertHelper<K,E,D>(entities, toDto, getParent, getKey, getChildren);
     }
 
     private NestedConvertHelper(List<E> entities, Function<E, D> toDto, Function<E, E> getParent, Function<E, K> getKey, Function<D, List<D>> getChildren){
