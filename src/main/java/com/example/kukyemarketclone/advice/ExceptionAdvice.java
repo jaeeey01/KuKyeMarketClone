@@ -128,5 +128,11 @@ public class ExceptionAdvice {
         return Response.failure(-1015,"존재 하지 않는 댓글입니다");
     }
 
+    @ExceptionHandler(MessageNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response MessageNotFoundException(MessageNotFoundException e){
+        return Response.failure(-1016, "존재하지 않는 쪽지입니다");
+    }
+
 
 }
