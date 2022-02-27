@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                     .authorizeRequests() //각 메소드와 URL에 따른 접근 정책 설정
                         .antMatchers(HttpMethod.POST,"/api/sign-in","/api/sign-up","/api/refresh-token").permitAll()
                         .antMatchers(HttpMethod.GET,"/image/**").permitAll()
-                        .antMatchers(HttpMethod.GET,"/api/**").permitAll()
+
 
                             //access 작성 방식 : @<빈이름>.<메소드명>(<인자, #id로하면 URL에 지정한 {id}가 매핑되어서 인자로 들어감>)
                             //삭제 요청은 본인과 관리자만 수행 가능 : 검증 로직을 수행하기 위해 @memberGuard.check의 반환 결과가 true면 요청 수행
@@ -55,6 +55,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                         .antMatchers(HttpMethod.DELETE,"/api/posts/{id}").access("@postGuard.check(#id)")
                         .antMatchers(HttpMethod.POST,"/api/comments").authenticated()
                         .antMatchers(HttpMethod.DELETE,"/api/comments/{id}").access("@commentGuard.check(#id)")
+
+                        //쪽지 목록  조회는 memberId의 주입이 필요하므로 인증된 사용자만 가능
+                        //쪽지 조회, 삭제는 관리자 또는 자원의 소유자가 가능
+                        // 쪽지 생성은 인증된 사용자가 할 수 있음
+                        .antMatchers(HttpMethod.GET,"/api/messages/sender", "/api/messages/receiver").authenticated()
+                        .antMatchers(HttpMethod.GET,"/api/messages/{id}").access("@messageGuard.check(#id)")
+                        .antMatchers(HttpMethod.POST,"/api/messages").authenticated()
+                        .antMatchers(HttpMethod.DELETE,"/api/messages/sender/{id}").access("@messageSenderGuard.check(#id)")
+                        .antMatchers(HttpMethod.DELETE,"/api/messages/receiver/{id}").access("@messageReceiverGuard.check(#id)")
+
+                        .antMatchers(HttpMethod.GET,"/api/**").permitAll()//주의 :::: 구체적인 것이 앞서 등록되야함
                         .anyRequest().hasAnyRole("ADMIN")
                 .and()
                     .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler())//5 인증된 사용자가 권한 부족등의 사유로 접근 거부시 작동할 핸들러 지정

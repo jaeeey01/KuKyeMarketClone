@@ -1,13 +1,16 @@
 package com.example.kukyemarketclone.init;
 
+import com.example.kukyemarketclone.entity.Message.Message;
 import com.example.kukyemarketclone.entity.category.Category;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.entity.post.Post;
+import com.example.kukyemarketclone.exception.MemberNotFoundException;
 import com.example.kukyemarketclone.exception.RoleNotFoundException;
 import com.example.kukyemarketclone.repository.category.CategoryRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
+import com.example.kukyemarketclone.repository.message.MessageRepository;
 import com.example.kukyemarketclone.repository.role.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public class TestInitDB {
@@ -28,6 +32,8 @@ public class TestInitDB {
     PasswordEncoder passwordEncoder;
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    MessageRepository messageRepository;
 
     private String adminEmail = "admin@admin.com";
     private String member1Email = "member1@member.com";
@@ -40,6 +46,7 @@ public class TestInitDB {
         initTestAdmin();
         initTestMember();
         initCategory();
+        initMessage();
 
     }
 
@@ -72,6 +79,12 @@ public class TestInitDB {
                                 List.of(roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new)))
                 )
         );
+    }
+
+    private void initMessage(){
+        Member sender = memberRepository.findByEmail(getMember1Email()).orElseThrow(MemberNotFoundException::new);
+        Member receiver = memberRepository.findByEmail(getMember2Email()).orElseThrow(MemberNotFoundException::new);
+        IntStream.range(0,5).forEach(i -> messageRepository.save(new Message("content"+i, sender, receiver)));
     }
 
     public String getAdminEmail(){
