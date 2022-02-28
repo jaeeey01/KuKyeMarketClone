@@ -100,7 +100,7 @@ class MessageServiceTest {
     void createTest(){
         //given
         MessageCreateRequest req = createMessageCreateRequest();
-        given(memberRepository.findById(req.getSenderId())).willReturn(Optional.of(createMember()));
+        given(memberRepository.findById(req.getMemberId())).willReturn(Optional.of(createMember()));
         given(memberRepository.findById(req.getReceiverId())).willReturn(Optional.of(createMember()));
 
         //when
@@ -114,7 +114,7 @@ class MessageServiceTest {
     void createExceptionBySenderNotFoundTest(){
         //given
         MessageCreateRequest req = createMessageCreateRequest();
-        given(memberRepository.findById(req.getSenderId())).willReturn(Optional.empty());
+        given(memberRepository.findById(req.getMemberId())).willReturn(Optional.empty());
 
         //when, then
         assertThatThrownBy(() -> messageService.create(req)).isInstanceOf(MemberNotFoundException.class);
@@ -124,7 +124,7 @@ class MessageServiceTest {
     void createExceptionByReceiverNotFoundTest(){
         //given
         MessageCreateRequest req = createMessageCreateRequest();
-        given(memberRepository.findById(req.getSenderId())).willReturn(Optional.of(createMember()));
+        given(memberRepository.findById(req.getMemberId())).willReturn(Optional.of(createMember()));
         given(memberRepository.findById(req.getReceiverId())).willReturn(Optional.empty());
 
         //when
