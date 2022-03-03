@@ -2,7 +2,7 @@ package com.example.kukyemarketclone.dto.comment;
 
 import com.example.kukyemarketclone.entity.comment.Comment;
 import com.example.kukyemarketclone.helper.NestedConvertHelper;
-import com.example.kukyemarketclone.service.member.MemberDto;
+import com.example.kukyemarketclone.dto.member.MemberDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

@@ -1,5 +1,6 @@
 package com.example.kukyemarketclone.service.member;
 
+import com.example.kukyemarketclone.dto.member.MemberDto;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
 import com.example.kukyemarketclone.repository.member.MemberRepository;

@@ -1,4 +1,4 @@
-package com.example.kukyemarketclone.service.member;
+package com.example.kukyemarketclone.dto.member;
 
 import com.example.kukyemarketclone.entity.member.Member;
 import lombok.AllArgsConstructor;
@@ -16,6 +16,9 @@ public class MemberDto {
 
     public static MemberDto toDto(Member member){
         return new MemberDto(member.getId(),member.getEmail(), member.getUsername(), member.getNickname());
+    }
+    public static MemberDto empty(){
+        return new MemberDto(null,"","","");
     }
 
 }

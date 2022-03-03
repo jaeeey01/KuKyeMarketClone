@@ -9,6 +9,8 @@ import com.example.kukyemarketclone.repository.comment.CommentRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +19,13 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+
+    private final ApplicationEventPublisher publisher;
 
     public List<CommentDto> readAll(CommentReadCondition cond){
         return CommentDto.toDtoList(
@@ -30,7 +35,9 @@ public class CommentService {
 
     @Transactional
     public void create(CommentCreateRequest req){
-        commentRepository.save(CommentCreateRequest.toEntity(req, memberRepository, postRepository, commentRepository));
+        Comment comment = commentRepository.save(CommentCreateRequest.toEntity(req, memberRepository, postRepository, commentRepository));
+        comment.publishCreatedEvent(publisher); //댓글 알람 이벤트 발생
+        log.info("CommentService.create");
 
     }
 

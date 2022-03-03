@@ -1,7 +1,7 @@
 package com.example.kukyemarketclone.dto.post;
 
 import com.example.kukyemarketclone.entity.post.Post;
-import com.example.kukyemarketclone.service.member.MemberDto;
+import com.example.kukyemarketclone.dto.member.MemberDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;

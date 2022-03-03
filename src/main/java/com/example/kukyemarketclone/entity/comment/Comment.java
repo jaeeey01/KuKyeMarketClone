@@ -3,12 +3,15 @@ package com.example.kukyemarketclone.entity.comment;
 import com.example.kukyemarketclone.entity.common.EntityDate;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.post.Post;
+import com.example.kukyemarketclone.event.comment.CommentCreatedEvent;
+import com.example.kukyemarketclone.dto.member.MemberDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -111,4 +114,15 @@ public class Comment extends EntityDate {
     * getChildren(), getParent()의 형태로 작성
     * */
 
+    public void publishCreatedEvent(ApplicationEventPublisher publisher){
+        publisher.publishEvent(
+                new CommentCreatedEvent(
+                        MemberDto.toDto(getMember()),
+                        MemberDto.toDto(getPost().getMember()),
+                        //상위 댓글은 없을 수 있으므로 비어있는 MemberDto 주입
+                        Optional.ofNullable(getParent()).map( p -> p.getMember()).map(m -> MemberDto.toDto(m)).orElseGet(() -> MemberDto.empty()),
+                        getContent()
+                )
+        );
+    }
 }

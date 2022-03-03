@@ -1,6 +1,7 @@
 package com.example.kukyemarketclone.service.comment;
 
 import com.example.kukyemarketclone.dto.comment.CommentDto;
+import com.example.kukyemarketclone.event.comment.CommentCreatedEvent;
 import com.example.kukyemarketclone.exception.CommentNotFoundException;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
 import com.example.kukyemarketclone.exception.PostNotFoundException;
@@ -9,9 +10,11 @@ import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.post.PostRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +44,9 @@ class CommentServiceTest {
     MemberRepository memberRepository;
     @Mock
     PostRepository postRepository;
+
+    @Mock
+    ApplicationEventPublisher publisher;    //댓글 알림 이벤트 발생
 
     @Test
     void readAllTest() {
@@ -81,14 +87,24 @@ class CommentServiceTest {
     @Test
     void createTest(){
         //given
+        ArgumentCaptor<Object> eventCaptor = ArgumentCaptor.forClass(Object.class);
+
+
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
         given(postRepository.findById(anyLong())).willReturn(Optional.of(createPost()));
+        given(commentRepository.save(any())).willReturn(createComment(null));
 
         //when
         commentService.create(createCommentCreateRequest());
 
         //then
         verify(commentRepository).save(any());
+
+        //댓글 작성시 이벤트 발생
+        verify(publisher).publishEvent(eventCaptor.capture());
+
+        Object event = eventCaptor.getValue();//argumentCaptor를 이용한 발행된 이벤트 검증 로직 추가
+        assertThat(event).isInstanceOf(CommentCreatedEvent.class);
     }
 
 
