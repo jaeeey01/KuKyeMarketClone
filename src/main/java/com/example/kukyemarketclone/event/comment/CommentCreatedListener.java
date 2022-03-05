@@ -52,7 +52,8 @@ public class CommentCreatedListener {
 
     @TransactionalEventListener
     @Async
-    public void handleAlarm(CommentCreatedEvent event){ //전송할 알람 메시지 생성, 게시글 작성자, 상위 댓글 작성자에게 알람 전송 가능 여부 확인 뒤 알람 전송 수행
+    public void handleAlarm(CommentCreatedEvent event){
+        //전송할 알람 메시지 생성, 게시글 작성자, 상위 댓글 작성자에게 알람 전송 가능 여부 확인 뒤 알람 전송 수행
         log.info("CommentCreatedListener.handleAlarm");
         String message = generateAlarmMessage(event);
         if(isAbleToSendToPostWriter(event)) alarmTo(event.getPostWriter(), message);
@@ -64,7 +65,8 @@ public class CommentCreatedListener {
         alarmServices.stream().forEach(alarmService -> alarmService.alarm(new AlarmInfoDto(memberDto, message)));
     }
 
-    private boolean isAbleToSendToPostWriter(CommentCreatedEvent event){ //댓글의 작성자가 게시글 작성자이거나 게시글의 작성자가 상위 댓글 작성자라면(중복알람방지) 전송 할 필요 없음
+    private boolean isAbleToSendToPostWriter(CommentCreatedEvent event){
+        //댓글의 작성자가 게시글 작성자이거나 게시글의 작성자가 상위 댓글 작성자라면(중복알람방지) 전송 할 필요 없음
         if(!isSameMember(event.getPublisher(), event.getPostWriter())){
             if(hasParent(event)) return !isSameMember(event.getPostWriter(),event.getParentWriter());
             return true;
@@ -85,7 +87,8 @@ public class CommentCreatedListener {
         return event.getParentWriter().getId() != null;
     }
 
-    private String generateAlarmMessage(CommentCreatedEvent event){ //발행자의 닉네임과 댓글 내용으로 알람 메시지 생성
+    private String generateAlarmMessage(CommentCreatedEvent event){
+        //발행자의 닉네임과 댓글 내용으로 알람 메시지 생성
         return event.getPublisher().getNickname() + " : " + event.getContent();
     }
 

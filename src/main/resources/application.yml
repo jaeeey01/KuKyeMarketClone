@@ -19,6 +19,8 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 5MB
+  messages: #locale 정보에 따라 메세지를 찾을 수 있도록
+    basename: i18n/exception,i18n/validation # basename 지정
 
 
 
