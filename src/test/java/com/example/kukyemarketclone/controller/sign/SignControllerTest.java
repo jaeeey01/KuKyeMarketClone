@@ -1,7 +1,6 @@
 package com.example.kukyemarketclone.controller.sign;
 
 import com.example.kukyemarketclone.dto.sign.SignInRequest;
-import com.example.kukyemarketclone.dto.sign.SignInResponse;
 import com.example.kukyemarketclone.dto.sign.SignUpRequest;
 import com.example.kukyemarketclone.factory.dto.SignInRequestFactory;
 import com.example.kukyemarketclone.factory.dto.SignInResponseFactory;
@@ -16,14 +15,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.example.kukyemarketclone.factory.dto.RefreshTokenResponseFactory.createRefreshTokenResponse;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)

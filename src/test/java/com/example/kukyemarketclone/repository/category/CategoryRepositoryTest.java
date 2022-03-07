@@ -11,7 +11,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,6 @@ import static com.example.kukyemarketclone.factory.entity.CategoryFactory.create
 import static com.example.kukyemarketclone.factory.entity.CategoryFactory.createCategoryWithName;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)

@@ -2,11 +2,9 @@ package com.example.kukyemarketclone.dto.post;
 
 import org.junit.jupiter.api.Test;
 
-import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 

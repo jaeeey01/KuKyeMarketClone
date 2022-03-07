@@ -5,14 +5,12 @@ import org.junit.jupiter.api.Test;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-
 import java.util.List;
 import java.util.Set;
 
 import static com.example.kukyemarketclone.factory.dto.PostUpdateRequestFactory.createPostUpdateRequest;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 
 class PostUpdateRequestValidationTest {

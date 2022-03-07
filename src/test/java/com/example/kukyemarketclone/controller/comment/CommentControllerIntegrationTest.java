@@ -25,23 +25,19 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import javax.transaction.Transactional;
+import java.util.List;
 
 import static com.example.kukyemarketclone.factory.dto.CommentCreateRequestFactory.createCommentCreateRequest;
 import static com.example.kukyemarketclone.factory.dto.CommentReadConditionFactory.createCommentReadCondition;
 import static com.example.kukyemarketclone.factory.dto.SignInRequestFactory.createSignInRequest;
 import static com.example.kukyemarketclone.factory.entity.CommentFactory.createComment;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.springframework.web.context.WebApplicationContext;
-
-import javax.transaction.Transactional;
-
-import java.util.List;
-
 import static com.example.kukyemarketclone.factory.entity.PostFactory.createPost;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -2,7 +2,6 @@ package com.example.kukyemarketclone.repository.role;
 
 import com.example.kukyemarketclone.config.QuerydslConfig;
 import com.example.kukyemarketclone.entity.member.Role;
-import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.exception.RoleNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

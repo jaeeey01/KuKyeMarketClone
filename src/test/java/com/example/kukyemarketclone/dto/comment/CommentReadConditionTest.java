@@ -5,13 +5,11 @@ import org.junit.jupiter.api.Test;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.kukyemarketclone.factory.dto.CommentReadConditionFactory.createCommentReadCondition;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CommentReadConditionTest {
 

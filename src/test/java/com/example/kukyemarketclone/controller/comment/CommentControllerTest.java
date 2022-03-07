@@ -14,13 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static com.example.kukyemarketclone.factory.dto.CommentCreateRequestFactory.createCommentCreateRequest;
 import static com.example.kukyemarketclone.factory.dto.CommentCreateRequestFactory.createCommentCreateRequestWithMemberId;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import static com.example.kukyemarketclone.factory.dto.CommentReadConditionFactory.createCommentReadCondition;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

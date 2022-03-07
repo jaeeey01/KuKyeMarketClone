@@ -3,7 +3,6 @@ package com.example.kukyemarketclone.dto.category;
 import com.example.kukyemarketclone.entity.category.Category;
 import com.example.kukyemarketclone.exception.CategoryNotFoundException;
 import com.example.kukyemarketclone.repository.category.CategoryRepository;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

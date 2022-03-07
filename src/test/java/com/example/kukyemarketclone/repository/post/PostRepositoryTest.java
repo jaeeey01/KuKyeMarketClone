@@ -3,7 +3,6 @@ package com.example.kukyemarketclone.repository.post;
 import com.example.kukyemarketclone.config.QuerydslConfig;
 import com.example.kukyemarketclone.dto.post.PostUpdateRequest;
 import com.example.kukyemarketclone.entity.category.Category;
-
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.post.Image;
 import com.example.kukyemarketclone.entity.post.Post;
@@ -20,10 +19,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.kukyemarketclone.factory.dto.PostUpdateRequestFactory.createPostUpdateRequest;
 import static com.example.kukyemarketclone.factory.entity.CategoryFactory.createCategory;

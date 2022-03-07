@@ -4,7 +4,6 @@ import com.example.kukyemarketclone.entity.comment.Comment;
 import com.example.kukyemarketclone.exception.CommentNotFoundException;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
 import com.example.kukyemarketclone.exception.PostNotFoundException;
-import com.example.kukyemarketclone.repository.category.CategoryRepository;
 import com.example.kukyemarketclone.repository.comment.CommentRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.post.PostRepository;

@@ -3,7 +3,6 @@ package com.example.kukyemarketclone.controller.category;
 import com.example.kukyemarketclone.dto.category.CategoryCreateRequest;
 import com.example.kukyemarketclone.service.category.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,12 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.example.kukyemarketclone.factory.dto.CategoryCreateRequestFactory.createCategoryCreateRequest;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 
 @ExtendWith(MockitoExtension.class)

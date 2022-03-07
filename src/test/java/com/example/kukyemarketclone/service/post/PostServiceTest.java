@@ -25,7 +25,6 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.List;
 import java.util.Optional;
-
 import java.util.stream.IntStream;
 
 import static com.example.kukyemarketclone.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
@@ -38,10 +37,8 @@ import static com.example.kukyemarketclone.factory.entity.ImageFactory.createIma
 import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMember;
 import static com.example.kukyemarketclone.factory.entity.PostFactory.createPostWithImages;
 import static java.util.stream.Collectors.toList;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;

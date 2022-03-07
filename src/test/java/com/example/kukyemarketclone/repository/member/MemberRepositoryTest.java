@@ -15,17 +15,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMember;
 import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMemberWithRoles;
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest //JPA관련 TEST만 할 것 : JPA관련 설정이나 Repository들만 스프링빈으로 등록, @Autowired로 주입받음
 @Import(QuerydslConfig.class)

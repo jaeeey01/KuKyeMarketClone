@@ -4,11 +4,9 @@ import com.example.kukyemarketclone.entity.comment.Comment;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.repository.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.List;
 

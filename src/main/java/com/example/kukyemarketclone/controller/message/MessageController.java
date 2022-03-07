@@ -4,7 +4,6 @@ import com.example.kukyemarketclone.aop.AssignMemberId;
 import com.example.kukyemarketclone.dto.message.MessageCreateRequest;
 import com.example.kukyemarketclone.dto.message.MessageReadCondition;
 import com.example.kukyemarketclone.dto.response.Response;
-import com.example.kukyemarketclone.entity.Message.Message;
 import com.example.kukyemarketclone.service.message.MessageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -8,7 +8,6 @@ import static com.example.kukyemarketclone.factory.entity.ImageFactory.createIma
 import static com.example.kukyemarketclone.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ImageTest {
     //객체에 대한 동작을 별도로 테스트

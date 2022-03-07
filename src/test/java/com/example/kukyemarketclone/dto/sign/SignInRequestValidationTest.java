@@ -8,8 +8,7 @@ import javax.validation.Validator;
 import java.util.Set;
 
 import static com.example.kukyemarketclone.factory.dto.SignInRequestFactory.*;
-import  static java.util.stream.Collectors.toSet;
-
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SignInRequestValidationTest {

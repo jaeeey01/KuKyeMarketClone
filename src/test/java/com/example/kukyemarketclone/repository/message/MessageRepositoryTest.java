@@ -13,11 +13,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -25,8 +23,6 @@ import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMe
 import static com.example.kukyemarketclone.factory.entity.MessageFactory.createMessage;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LONG_2D_ARRAY;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)

@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Import;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.util.List;
 
 import static com.example.kukyemarketclone.factory.entity.CategoryFactory.createCategory;
@@ -27,7 +26,6 @@ import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMe
 import static com.example.kukyemarketclone.factory.entity.PostFactory.createPost;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)

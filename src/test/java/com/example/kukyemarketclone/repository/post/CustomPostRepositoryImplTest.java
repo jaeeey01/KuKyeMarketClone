@@ -16,9 +16,7 @@ import org.springframework.data.domain.Page;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.util.List;
-
 import java.util.stream.IntStream;
 
 import static com.example.kukyemarketclone.factory.dto.PostReadConditionFactory.createPostReadCondition;
@@ -27,7 +25,6 @@ import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMe
 import static com.example.kukyemarketclone.factory.entity.PostFactory.createPost;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)

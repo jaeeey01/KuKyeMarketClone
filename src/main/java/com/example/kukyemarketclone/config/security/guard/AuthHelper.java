@@ -5,14 +5,12 @@ import com.example.kukyemarketclone.config.security.CustomUserDetails;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-
 
 import java.util.Set;
 import java.util.stream.Collectors;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE) // 직접 인스턴스를 생성하여 사용하지 않도록 private 생성자 만듬
 public class AuthHelper {//사용자 인증 정보를 추출하기 위해 도움 주는 클래스
 

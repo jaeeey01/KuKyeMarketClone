@@ -8,8 +8,6 @@ import java.util.Optional;
 
 import static com.example.kukyemarketclone.factory.entity.CommentFactory.createComment;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.OPTIONAL;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CommentTest {
 
