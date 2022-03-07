@@ -212,7 +212,24 @@ class MemberRepositoryTest {
         List<MemberRole> rs = em.createQuery("select mr from MemberRole mr",MemberRole.class).getResultList();
         assertThat(rs.size()).isZero();
 
+    }
 
+    @Test
+    void findWithROlesByEmailTest(){
+        //given
+        List<RoleType> roleTypes = List.of(RoleType.ROLE_NORMAL,RoleType.ROLE_SPECIAL_BUYER,RoleType.ROLE_ADMIN);
+        List<Role> roles = roleTypes.stream().map(roleType -> new Role(roleType)).collect(Collectors.toList());
+        roleRepository.saveAll(roles);
+        Member member = memberRepository.save(createMemberWithRoles(roleRepository.findAll()));
+        clear();
+
+        //when
+        Member foundMember = memberRepository.findWithRolesByEmail(member.getEmail()).orElseThrow(MemberNotFoundException::new);
+
+        //then
+        List<RoleType> result = foundMember.getRoles().stream().map(memberRole -> memberRole.getRole().getRoleType()).collect(Collectors.toList());
+        assertThat(result.size()).isEqualTo(roleTypes.size());
+        assertThat(result).contains(roleTypes.get(0),roleTypes.get(1),roleTypes.get(2));
     }
 
 

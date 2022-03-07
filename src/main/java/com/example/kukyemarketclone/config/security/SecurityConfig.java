@@ -74,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                 .and()
                     //토큰으로 사용자를 인증하기 위해 직접 정의한 JwtAuthenticationFilter를  UsernamePasswordAuthenticationFilter 이전 위치에 등록
                     //JwtAuthenticationFilter는 필요한 의존성인 TokenService와 CustomUserDetailsService를 주입 받음
-                    .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper,userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(new JwtAuthenticationFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class);
     }
 
 

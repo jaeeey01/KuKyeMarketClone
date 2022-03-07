@@ -17,8 +17,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 
+import static com.example.kukyemarketclone.factory.dto.SignInRequestFactory.createSignInRequest;
 import static com.example.kukyemarketclone.factory.dto.SignUpRequestFactory.createSignUpRequest;
 import static com.example.kukyemarketclone.factory.entity.MemberFactory.createMember;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -96,13 +98,13 @@ class SignServiceTest {
     @Test
     void signInTest() {
         //given
-        given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
+        given(memberRepository.findWithRolesByEmail(any())).willReturn(Optional.of(createMember()));
         given(passwordEncoder.matches(anyString(),anyString())).willReturn(true);
-        given(accessTokenHelper.createToken(anyString())).willReturn("access");
-        given(refreshTokenHelper.createToken(anyString())).willReturn("refresh");
+        given(accessTokenHelper.createToken(any())).willReturn("access");
+        given(refreshTokenHelper.createToken(any())).willReturn("refresh");
 
         //when
-        SignInResponse res = signService.signIn(SignInRequestFactory.createSignInRequest("email","password"));
+        SignInResponse res = signService.signIn(createSignInRequest("email","password"));
 
         //then
         assertThat(res.getAccessToken()).isEqualTo("access");
@@ -112,21 +114,21 @@ class SignServiceTest {
     @Test
     void signInExceptionByNoneMemberTest(){
         //given
-        given(memberRepository.findByEmail(any())).willReturn(Optional.empty());
+        given(memberRepository.findWithRolesByEmail(any())).willReturn(Optional.empty());
 
         //when, then
-        assertThatThrownBy(() -> signService.signIn(SignInRequestFactory.createSignInRequest("email","password")))
+        assertThatThrownBy(() -> signService.signIn(createSignInRequest("email","password")))
                 .isInstanceOf(LoginFailureException.class);
     }
 
     @Test
     void signInExceptionByInvalidPasswordTest(){
         //given
-        given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
+        given(memberRepository.findWithRolesByEmail(any())).willReturn(Optional.of(createMember()));
         given(passwordEncoder.matches(anyString(),anyString())).willReturn(false);
 
         //when, then
-        assertThatThrownBy(() -> signService.signIn(SignInRequestFactory.createSignInRequest("email","password")))
+        assertThatThrownBy(() -> signService.signIn(createSignInRequest("email","password")))
                 .isInstanceOf(LoginFailureException.class);
     }
 
@@ -136,10 +138,8 @@ class SignServiceTest {
         String refreshToken = "refreshToken";
         String subject = "subject";
         String accessToken = "accessToken";
-        given(refreshTokenHelper.validate(refreshToken)).willReturn(true);
-        given(refreshTokenHelper.extractSubject(refreshToken)).willReturn(subject);
-        given(accessTokenHelper.createToken(subject)).willReturn(accessToken);
-
+        given(refreshTokenHelper.parse(refreshToken)).willReturn(Optional.of(new TokenHelper.PrivateClaims("memberId", List.of("ROLE_NORMAL"))));
+        given(accessTokenHelper.createToken(any())).willReturn(accessToken);
         //when
         RefreshTokenResponse res = signService.refreshToken(refreshToken);
 
@@ -151,11 +151,11 @@ class SignServiceTest {
     void refreshTokenExceptionByInvalidTokenTest(){
         //given
         String refreshToken = "refreshToken";
-        given(refreshTokenHelper.validate(refreshToken)).willReturn(false);
+        given(refreshTokenHelper.parse(refreshToken)).willReturn(Optional.empty());
 
         //when, then
         assertThatThrownBy(() -> signService.refreshToken(refreshToken))
-                .isInstanceOf(AuthenticationEntryPointException.class);
+                .isInstanceOf(RefreshTokenFailureException.class);
     }
 
 }

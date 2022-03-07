@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class SignService {
@@ -35,11 +37,11 @@ public class SignService {
     }
     @Transactional(readOnly = true)
     public SignInResponse signIn(SignInRequest req){
-        Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
+        Member member = memberRepository.findWithRolesByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(req,member);
-        String subject = createSubject(member);
-        String accessToken = accessTokenHelper.createToken(subject);
-        String refrashToken = refreshTokenHelper.createToken(subject);
+        TokenHelper.PrivateClaims privateClaims = createPrivateClaims(member);
+        String accessToken = accessTokenHelper.createToken(privateClaims);
+        String refrashToken = refreshTokenHelper.createToken(privateClaims);
         return new SignInResponse(accessToken,refrashToken);
     }
 
@@ -59,20 +61,22 @@ public class SignService {
 
     //refreshToken을 이용한 accessToken 재발급
     public RefreshTokenResponse refreshToken(String rToken){
-        validateRefreshToken(rToken);
-        String subject = refreshTokenHelper.extractSubject(rToken); //검증된 refreshToken에서 subject 추출
-        String accessToken = accessTokenHelper.createToken(subject);
+        TokenHelper.PrivateClaims privateClaims = refreshTokenHelper.parse(rToken).orElseThrow(RefreshTokenFailureException::new);
+        String accessToken = accessTokenHelper.createToken(privateClaims);
         return new RefreshTokenResponse(accessToken);
     }
 
-    private String createSubject(Member member){
-        return String.valueOf(member.getId());
-    }
 
-    private void validateRefreshToken(String rToken){
-        if(!refreshTokenHelper.validate(rToken)){
-            throw new AuthenticationEntryPointException();
-        }
+
+    private TokenHelper.PrivateClaims createPrivateClaims(Member member){
+        return new TokenHelper.PrivateClaims(
+                String.valueOf(member.getId()),
+                member.getRoles().stream()
+                        .map(memberRole -> memberRole.getRole())
+                        .map(role -> role.getRoleType())
+                        .map(roleType -> roleType.toString())
+                        .collect(Collectors.toList())
+        );
     }
 
 }

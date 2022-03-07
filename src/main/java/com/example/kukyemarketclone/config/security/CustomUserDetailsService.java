@@ -1,5 +1,6 @@
 package com.example.kukyemarketclone.config.security;
 
+import com.example.kukyemarketclone.config.token.TokenHelper;
 import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,22 +25,23 @@ public class CustomUserDetailsService implements UserDetailsService {
     * CustomUserDetailsService는 스프링 컨테이너에 등록되기 때문에 다른 의존성들을 주입받을 수 있음
     * */
 
+    private final TokenHelper accessTokenHelper;
 
-    private final MemberRepository memberRepository;
 
-
+    //변경 : DB에 접근하던 전 코드와 달리 DB에 접근 필요성 X
+    //단순히 전달받은 토큰에서 필요한 정보만 추출 후 CustomUserDetails 생성
+    //유효하지 않은 토큰이라면 null반환
     @Override
-    public CustomUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Member member = memberRepository.findWithRolesById(Long.valueOf(userId))//토큰에서 추출한 사용자의 id를 이용하여 Member 조회
+    public CustomUserDetails loadUserByUsername(String token) throws UsernameNotFoundException {
+        return accessTokenHelper.parse(token)
+                .map(this::convert)
+                .orElse(null);
+    }
 
-                //만약 사용자를 찾지 못했다면, 권한이 없고 비어 있는 CustomUserDetails를 생성 반환
-                .orElseGet(() -> new Member(null,null,null,null, List.of()));
-        return new CustomUserDetails(//권한 등급을  GrantedAuthority 인터페이스 타입으로 받게 되는데 이의 간단 구현체인 SimpleGrantedAuthority 이용
-                String.valueOf(member.getId()),
-                member.getRoles().stream().map(memberRole -> memberRole.getRole())
-                        .map(role -> role.getRoleType())
-                        .map(roleType -> roleType.toString())//권한 등급은 String 타입으로 인식하기 때문에 RoleType을 String 으로 변환
-                        .map(SimpleGrantedAuthority::new).collect(Collectors.toSet())
+    private CustomUserDetails convert(TokenHelper.PrivateClaims privateClaims){
+        return new CustomUserDetails(
+                privateClaims.getMemberId(),
+                privateClaims.getRoleTypes().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet())
         );
     }
 }
