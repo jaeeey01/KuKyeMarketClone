@@ -5,6 +5,8 @@ import com.example.kukyemarketclone.dto.message.MessageDto;
 import com.example.kukyemarketclone.dto.message.MessageListDto;
 import com.example.kukyemarketclone.dto.message.MessageReadCondition;
 import com.example.kukyemarketclone.entity.Message.Message;
+import com.example.kukyemarketclone.entity.member.Member;
+import com.example.kukyemarketclone.exception.MemberNotFoundException;
 import com.example.kukyemarketclone.exception.MessageNotFoundException;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.message.MessageRepository;
@@ -48,7 +50,10 @@ public class MessageService {
     //전달받은 MessageCreateRequest를 Message 엔티티로 변환하여 저장
     @Transactional
     public void create(MessageCreateRequest req){
-        messageRepository.save(MessageCreateRequest.toEntity(req,memberRepository));
+        Member sender = memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        Member receiver = memberRepository.findById(req.getReceiverId()).orElseThrow(MemberNotFoundException::new);
+        Message message = new Message(req.getContent(),sender,receiver);
+        messageRepository.save(message);
     }
 
     /*deleteBy 000

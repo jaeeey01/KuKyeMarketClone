@@ -47,7 +47,4 @@ public class SignUpRequest {
     @Pattern(regexp = "^[A-Za-z가-힣]+$", message = "{signUpRequest.nickname.pattern}")
     private String nickname;
 
-    public static Member toEntity(SignUpRequest req, Role role, PasswordEncoder encoder){
-        return new Member(req.email,encoder.encode(req.password),req.username, req.nickname, List.of(role));
-    }
 }

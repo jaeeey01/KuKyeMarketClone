@@ -4,6 +4,10 @@ import com.example.kukyemarketclone.dto.comment.CommentCreateRequest;
 import com.example.kukyemarketclone.dto.comment.CommentDto;
 import com.example.kukyemarketclone.dto.comment.CommentReadCondition;
 import com.example.kukyemarketclone.entity.comment.Comment;
+import com.example.kukyemarketclone.entity.member.Member;
+import com.example.kukyemarketclone.entity.post.Post;
+import com.example.kukyemarketclone.exception.CommentNotFoundException;
+import com.example.kukyemarketclone.exception.MemberNotFoundException;
 import com.example.kukyemarketclone.exception.PostNotFoundException;
 import com.example.kukyemarketclone.repository.comment.CommentRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,7 +40,13 @@ public class CommentService {
 
     @Transactional
     public void create(CommentCreateRequest req){
-        Comment comment = commentRepository.save(CommentCreateRequest.toEntity(req, memberRepository, postRepository, commentRepository));
+        Member member = memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        Post post = postRepository.findById(req.getPostId()).orElseThrow(PostNotFoundException::new);
+        Comment parent = Optional.ofNullable(req.getParentId())
+                .map(id -> commentRepository.findById(id).orElseThrow(CommentNotFoundException::new))
+                .orElse(null);
+
+        Comment comment = commentRepository.save(new Comment(req.getContent(), member, post, parent));
         comment.publishCreatedEvent(publisher); //댓글 알람 이벤트 발생
         log.info("CommentService.create");
 

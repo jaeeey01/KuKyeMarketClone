@@ -6,13 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface MessageRepository extends JpaRepository<Message,Long> {
     //단순히 sender 와 receiver 페치 조인 단건 조회
     @Query("select m from Message m left join fetch m.sender left join fetch m.receiver where m.id =:id")
-    Optional<Message> findWithSenderAndReceiverById(Long id);
+    Optional<Message> findWithSenderAndReceiverById(@Param("id") Long id);
 
     /* 각사용자의 송신 또는 수신내역 조회 쿼리
     * 마지막 쪽지 id 보다 작은 id 값을 가지는 쪽지만 조회.
@@ -30,11 +31,13 @@ public interface MessageRepository extends JpaRepository<Message,Long> {
     @Query("select new com.example.kukyemarketclone.dto.message.MessageSimpleDto(m.id, m.content, m.receiver.nickname, m.createdAt) " +
             "from Message m left join m.receiver " +
             "where m.sender.id = :senderId and m.id < :lastMessageId and m.deletedBySender = false order by m.id desc")
-    Slice<MessageSimpleDto> findAllBySenderIdOrderByMessageIdDesc(Long senderId, Long lastMessageId, Pageable pageable);
+    Slice<MessageSimpleDto> findAllBySenderIdOrderByMessageIdDesc(
+            @Param("senderId") Long senderId, @Param("lastMessageId") Long lastMessageId, Pageable pageable);
 
     @Query("select new com.example.kukyemarketclone.dto.message.MessageSimpleDto(m.id, m.content, m.sender.nickname, m.createdAt) " +
             "from Message m left join m.sender " +
             "where m.receiver.id = :receiverId and m.id < :lastMessageId and m.deletedByReceiver = false order by m.id desc")
-    Slice<MessageSimpleDto> findAllByReceiverIdOrderByMessageIdDesc(Long receiverId, Long lastMessageId, Pageable pageable);
+    Slice<MessageSimpleDto> findAllByReceiverIdOrderByMessageIdDesc(
+            @Param("receiverId") Long receiverId, @Param("lastMessageId") Long lastMessageId, Pageable pageable);
 
 }

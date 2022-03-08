@@ -27,11 +27,4 @@ public class CategoryCreateRequest {
     @ApiModelProperty(value = "부모 카테고리 아이디", notes = "부모 카테고리 아이디를 입력해주세요", required = true, example = "7")
     private Long parentId;
 
-    public static Category toEntity(CategoryCreateRequest req, CategoryRepository categoryRepository) {
-       return new Category(req.getName(), Optional.ofNullable(req.getParentId())
-               .map(id -> categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new))
-               .orElse(null));
-
-    }
-
 }

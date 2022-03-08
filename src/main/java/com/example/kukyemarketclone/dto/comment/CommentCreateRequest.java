@@ -1,12 +1,5 @@
 package com.example.kukyemarketclone.dto.comment;
 
-import com.example.kukyemarketclone.entity.comment.Comment;
-import com.example.kukyemarketclone.exception.CommentNotFoundException;
-import com.example.kukyemarketclone.exception.MemberNotFoundException;
-import com.example.kukyemarketclone.exception.PostNotFoundException;
-import com.example.kukyemarketclone.repository.comment.CommentRepository;
-import com.example.kukyemarketclone.repository.member.MemberRepository;
-import com.example.kukyemarketclone.repository.post.PostRepository;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Positive;
-import java.util.Optional;
 
 @ApiModel(value = "댓글 생성 요청")
 @Data
@@ -40,19 +32,5 @@ public class CommentCreateRequest {
 
     @ApiModelProperty(value = "부모 댓글 아이디", notes = "부모 댓글 아이디를 입력해주세요", example = "7")
     private Long parentId;
-
-    public static Comment toEntity(CommentCreateRequest req, MemberRepository memberRepository, PostRepository postRepository, CommentRepository commentRepository){
-        return new Comment(
-                req.content,
-                memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException::new),
-                postRepository.findById(req.postId).orElseThrow(PostNotFoundException::new),
-                Optional.ofNullable(req.parentId)
-                        .map(id -> commentRepository.findById(id).orElseThrow(CommentNotFoundException::new))
-                        .orElse(null)
-                //ofNullalbe에 값이
-                // null : map 수행 X, orElse 반환
-                // 정상 : 해당 Comment 반환되어 부모로 지정
-        );
-    }
 
 }

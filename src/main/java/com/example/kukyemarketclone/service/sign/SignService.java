@@ -6,6 +6,7 @@ import com.example.kukyemarketclone.dto.sign.SignInRequest;
 import com.example.kukyemarketclone.dto.sign.SignInResponse;
 import com.example.kukyemarketclone.dto.sign.SignUpRequest;
 import com.example.kukyemarketclone.entity.member.Member;
+import com.example.kukyemarketclone.entity.member.Role;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.exception.*;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,9 +33,11 @@ public class SignService {
     @Transactional
     public void signUp(SignUpRequest req){
         validateSignUpInfo(req);
-        memberRepository.save(SignUpRequest.toEntity(req,
-                roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new),
-                passwordEncoder));
+        String encodedPassword = passwordEncoder.encode(req.getPassword());
+        List<Role> roles = List.of(roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new));
+        memberRepository.save(
+                new Member(req.getEmail(), encodedPassword, req.getUsername(), req.getNickname(), roles)
+        );
     }
     @Transactional(readOnly = true)
     public SignInResponse signIn(SignInRequest req){

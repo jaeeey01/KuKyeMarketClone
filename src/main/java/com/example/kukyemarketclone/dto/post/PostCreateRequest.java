@@ -54,15 +54,4 @@ public class PostCreateRequest {
     // 첨부하기 위한 이미지 목록 - MultipartFile로 가지고 있음
     private List<MultipartFile> images = new ArrayList<>();//이미지가 없을 경우의 NPE 대비하여 비어있는 리스트로 초기화
 
-    public static Post toEntity(PostCreateRequest req, MemberRepository memberRepository, CategoryRepository categoryRepository){
-        return new Post(
-                req.title,
-                req.content,
-                req.price,
-                memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException::new),
-                categoryRepository.findById(req.getCategoryId()).orElseThrow(CategoryNotFoundException::new),
-                req.images.stream().map(i -> new Image(i.getOriginalFilename())).collect(toList())
-        );
-    }
-
 }

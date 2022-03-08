@@ -1,8 +1,12 @@
 package com.example.kukyemarketclone.service.post;
 
 import com.example.kukyemarketclone.dto.post.*;
+import com.example.kukyemarketclone.entity.category.Category;
+import com.example.kukyemarketclone.entity.member.Member;
 import com.example.kukyemarketclone.entity.post.Image;
 import com.example.kukyemarketclone.entity.post.Post;
+import com.example.kukyemarketclone.exception.CategoryNotFoundException;
+import com.example.kukyemarketclone.exception.MemberNotFoundException;
 import com.example.kukyemarketclone.exception.PostNotFoundException;
 import com.example.kukyemarketclone.repository.category.CategoryRepository;
 import com.example.kukyemarketclone.repository.member.MemberRepository;
@@ -14,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -28,12 +33,12 @@ public class PostService {
 
     @Transactional
     public PostCreateResponse create(PostCreateRequest req){
+        Member member = memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        Category category = categoryRepository.findById(req.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
+        List<Image> images = req.getImages().stream().map( i -> new Image(i.getOriginalFilename())).collect(Collectors.toList());
+
         Post post = postRepository.save(
-            PostCreateRequest.toEntity(
-                    req,
-                    memberRepository,
-                    categoryRepository
-            )
+           new Post(req.getTitle(), req.getContent(), req.getPrice(), member, category, images)
         );
         uploadImages(post.getImages(),req.getImages());
         return new PostCreateResponse(post.getId());
