@@ -3,6 +3,7 @@ package com.example.kukyemarketclone.controller.category;
 import com.example.kukyemarketclone.advice.ExceptionAdvice;
 import com.example.kukyemarketclone.exception.CannotConvertNestedStructureException;
 import com.example.kukyemarketclone.exception.CategoryNotFoundException;
+import com.example.kukyemarketclone.handler.ResponseHandler;
 import com.example.kukyemarketclone.service.category.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,13 +29,15 @@ public class CategoryControllerAdviceTest {
     @InjectMocks CategoryController categoryController;
     @Mock
     CategoryService categoryService;
+    @Mock
+    ResponseHandler responseHandler;
     MockMvc mockMvc;
 
     @BeforeEach
     void beforeEach(){
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -45,8 +48,7 @@ public class CategoryControllerAdviceTest {
         //when,then
         mockMvc.perform(
                 get("/api/categories"))
-                .andExpect(status().is5xxServerError())
-                .andExpect(jsonPath("$.code").value(-1011));
+                .andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -57,8 +59,7 @@ public class CategoryControllerAdviceTest {
 
         mockMvc.perform(
                 delete("/api/categories/{id}",1L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1010));
+                .andExpect(status().isNotFound());
     }
 
 

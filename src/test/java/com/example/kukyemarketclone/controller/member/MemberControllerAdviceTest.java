@@ -2,6 +2,7 @@ package com.example.kukyemarketclone.controller.member;
 
 import com.example.kukyemarketclone.advice.ExceptionAdvice;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
+import com.example.kukyemarketclone.handler.ResponseHandler;
 import com.example.kukyemarketclone.service.member.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,13 +28,15 @@ public class MemberControllerAdviceTest {
     @InjectMocks MemberController memberController;
     @Mock
     MemberService memberService;
+    @Mock
+    ResponseHandler responseHandler;
     MockMvc mockMvc;
 
     @BeforeEach
     void beforeEach() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(memberController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(memberController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -44,8 +47,7 @@ public class MemberControllerAdviceTest {
         //when
         mockMvc.perform(
                 get("/api/members/{id}",1L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1007));
+                .andExpect(status().isNotFound());
 
     }
 
@@ -57,8 +59,7 @@ public class MemberControllerAdviceTest {
         //when, then
         mockMvc.perform(
                 delete("/api/members/{id}",1L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1007));
+                .andExpect(status().isNotFound());
     }
 
 

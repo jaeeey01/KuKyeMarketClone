@@ -86,8 +86,7 @@ public class MessageControllerIntegrationTest {
                 .param("size",String.valueOf(size))
 
         )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -117,8 +116,7 @@ public class MessageControllerIntegrationTest {
                 .param("size",String.valueOf(size))
 
         )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -139,13 +137,12 @@ public class MessageControllerIntegrationTest {
     void readByAdminTest() throws Exception{
         //given
         Long id = messageRepository.findAll().get(0).getId();
-        SignInResponse signInRes = signService.signIn(createSignInRequest(admin.getEmail(), initDB.getPassword()));
+        SignInResponse adminSignInRes = signService.signIn(createSignInRequest(admin.getEmail(), initDB.getPassword()));
 
-        //when, then
+        // when, then
         mockMvc.perform(
-                get("/api/messages/{id}",id)
-                .header("Authorization",signInRes.getAccessToken())
-        )
+                get("/api/messages/{id}", id)
+                        .header("Authorization", adminSignInRes.getAccessToken()))
                 .andExpect(status().isOk());
     }
 
@@ -158,8 +155,7 @@ public class MessageControllerIntegrationTest {
         mockMvc.perform(
                 get("/api/messages/{id}",id)
         )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -173,8 +169,7 @@ public class MessageControllerIntegrationTest {
                 get("/api/messages/{id}",id)
                 .header("Authorization", notResourceOwnerSignInRes.getAccessToken())
         )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -204,8 +199,7 @@ public class MessageControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req))
         )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -244,8 +238,7 @@ public class MessageControllerIntegrationTest {
         mockMvc.perform(
                 delete("/api/messages/{id}",id)
         )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -259,8 +252,7 @@ public class MessageControllerIntegrationTest {
                 delete("/api/messages/sender/{id}",id)
                 .header("Authorization",notResourceOwnerSignInRes.getAccessToken())
         )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -302,8 +294,7 @@ public class MessageControllerIntegrationTest {
                 delete("/api/messages/receiver/{id}",id)
 
         )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -317,8 +308,7 @@ public class MessageControllerIntegrationTest {
                 delete("/api/messages/receiver/{id}",id)
                 .header("Authorization",notResourceOwnerSignInRes.getAccessToken())
         )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
 }

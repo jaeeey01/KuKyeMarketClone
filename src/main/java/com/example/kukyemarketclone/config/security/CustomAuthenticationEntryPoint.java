@@ -5,6 +5,7 @@ import org.springframework.security.core.AuthenticationException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import java.io.IOException;
 
 public class CustomAuthenticationEntryPoint implements org.springframework.security.web.AuthenticationEntryPoint {
@@ -23,6 +24,6 @@ public class CustomAuthenticationEntryPoint implements org.springframework.secur
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.sendRedirect("/exception/entry-point");
+        response.setStatus(SC_UNAUTHORIZED);
     }
 }

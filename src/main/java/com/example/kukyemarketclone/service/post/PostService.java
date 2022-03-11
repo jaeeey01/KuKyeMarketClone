@@ -13,6 +13,7 @@ import com.example.kukyemarketclone.repository.member.MemberRepository;
 import com.example.kukyemarketclone.repository.post.PostRepository;
 import com.example.kukyemarketclone.service.file.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,29 +49,16 @@ public class PostService {
         return PostDto.toDto(postRepository.findById(id).orElseThrow(PostNotFoundException::new));
     }
 
-    /*uploadImages
-    * postCreateRequest.toEntity를 이용하여 Post 엔티티를 얻음
-    * Post 엔티티는 Image 엔티티를 가지고 있고, Image 엔티티는 각이미지의 고유이름으로 생성
-    * 실제 이미지 파일을 가지고 있는 MultipartFile을 Image가 가지고 있는 uniqueName을 파일명으로 하여 파일 저장소에 업로드 해야함
-    * Post가 가지고 있는 image 리스트는 MultipartFile 리스트를 이용하여 생성하였기 떄문에 동일한 순서와 길이가 보장
-    * 이에 대해 uploadImages로 전달해주고 FileService.upload에 각각의 MultipartFile과 uniquename을 인자로 보내주면서 파일 업로드 수행
-    * */
-    private void uploadImages(List<Image> images, List<MultipartFile> fileImages){
-        IntStream.range(0, images.size()).forEach(i -> fileService.upload(fileImages.get(i), images.get(i).getUniqueName()));
-    }
-
     @Transactional
+    @PreAuthorize("@postGuard.check(#id)")
     public void delete(Long id){
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         deleteImages(post.getImages());
         postRepository.delete(post);
     }
 
-    private void deleteImages(List<Image> images){
-        images.stream().forEach(i -> fileService.delete(i.getUniqueName()));
-    }
-
     @Transactional
+    @PreAuthorize("@postGuard.check(#id)")
     public PostUpdateResponse update(Long id, PostUpdateRequest req){
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         Post.ImageUpdatedResult result = post.update(req);
@@ -84,6 +72,21 @@ public class PostService {
         return PostListDto.toDto(
                 postRepository.findAllByCondition(cond)
         );
+    }
+
+    /*uploadImages
+     * postCreateRequest.toEntity를 이용하여 Post 엔티티를 얻음
+     * Post 엔티티는 Image 엔티티를 가지고 있고, Image 엔티티는 각이미지의 고유이름으로 생성
+     * 실제 이미지 파일을 가지고 있는 MultipartFile을 Image가 가지고 있는 uniqueName을 파일명으로 하여 파일 저장소에 업로드 해야함
+     * Post가 가지고 있는 image 리스트는 MultipartFile 리스트를 이용하여 생성하였기 떄문에 동일한 순서와 길이가 보장
+     * 이에 대해 uploadImages로 전달해주고 FileService.upload에 각각의 MultipartFile과 uniquename을 인자로 보내주면서 파일 업로드 수행
+     * */
+    private void uploadImages(List<Image> images, List<MultipartFile> fileImages){
+        IntStream.range(0, images.size()).forEach(i -> fileService.upload(fileImages.get(i), images.get(i).getUniqueName()));
+    }
+
+    private void deleteImages(List<Image> images){
+        images.stream().forEach(i -> fileService.delete(i.getUniqueName()));
     }
 
 }

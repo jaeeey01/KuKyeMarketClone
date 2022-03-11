@@ -5,6 +5,7 @@ import com.example.kukyemarketclone.dto.comment.CommentCreateRequest;
 import com.example.kukyemarketclone.exception.CommentNotFoundException;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
 import com.example.kukyemarketclone.exception.PostNotFoundException;
+import com.example.kukyemarketclone.handler.ResponseHandler;
 import com.example.kukyemarketclone.service.comment.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,8 @@ public class CommentControllerAdviceTest {
     @InjectMocks CommentController commentController;
     @Mock
     CommentService commentService;
+    @Mock
+    ResponseHandler responseHandler;
     MockMvc mockMvc;
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -40,7 +43,7 @@ public class CommentControllerAdviceTest {
     void beforeEach(){
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(commentController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(commentController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -55,8 +58,7 @@ public class CommentControllerAdviceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req))
         )
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1007));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -71,8 +73,7 @@ public class CommentControllerAdviceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req))
         )
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1012));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -87,8 +88,7 @@ public class CommentControllerAdviceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req))
         )
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1015));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -102,7 +102,6 @@ public class CommentControllerAdviceTest {
                 delete("/api/comments/{id}",id)
 
         )
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1015));
+                .andExpect(status().isNotFound());
     }
 }

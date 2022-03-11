@@ -6,6 +6,7 @@ import com.example.kukyemarketclone.dto.sign.SignUpRequest;
 import com.example.kukyemarketclone.exception.*;
 import com.example.kukyemarketclone.factory.dto.SignInRequestFactory;
 import com.example.kukyemarketclone.factory.dto.SignUpRequestFactory;
+import com.example.kukyemarketclone.handler.ResponseHandler;
 import com.example.kukyemarketclone.service.sign.SignService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +35,8 @@ public class SignControllerAdviceTest {
 
     @Mock
     SignService signService;
+    @Mock
+    ResponseHandler responseHandler;
 
     MockMvc mockMvc;
     ObjectMapper objectMapper = new ObjectMapper();
@@ -42,7 +45,7 @@ public class SignControllerAdviceTest {
     void beforeEach() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(signController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(signController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -133,14 +136,13 @@ public class SignControllerAdviceTest {
     @Test
     void refreshTokenAuthenticationEntryPointException() throws Exception{
         //given
-        given(signService.refreshToken(anyString())).willThrow(AuthenticationEntryPointException.class);
+        given(signService.refreshToken(anyString())).willThrow(RefreshTokenFailureException.class);
 
         //when, then
         mockMvc.perform(
                 post("/api/refresh-token")
                         .header("Authorization","refreshToken"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.code").value(-1001));
+                .andExpect(status().isBadRequest());
 
 
     }
@@ -150,8 +152,7 @@ public class SignControllerAdviceTest {
         //given, when, then
         mockMvc.perform(
                 post("/api/refresh-token"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(-1009));
+                .andExpect(status().isBadRequest());
     }
 
 

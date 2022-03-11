@@ -94,8 +94,7 @@ public class CategoryControllerIntegrationTest {
                 post("/api/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -110,8 +109,7 @@ public class CategoryControllerIntegrationTest {
                         .header("Authorization",normalMemberSignInRes.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -140,8 +138,7 @@ public class CategoryControllerIntegrationTest {
         mockMvc.perform(
                 delete("/api/categories/{id}",id)
                         .header("Authorization",normalMemberSignInResponse.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
 

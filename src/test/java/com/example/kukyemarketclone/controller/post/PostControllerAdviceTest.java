@@ -6,6 +6,7 @@ import com.example.kukyemarketclone.exception.CategoryNotFoundException;
 import com.example.kukyemarketclone.exception.MemberNotFoundException;
 import com.example.kukyemarketclone.exception.PostNotFoundException;
 import com.example.kukyemarketclone.exception.UnsupportedImageFormatException;
+import com.example.kukyemarketclone.handler.ResponseHandler;
 import com.example.kukyemarketclone.service.post.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,13 +35,15 @@ public class PostControllerAdviceTest {
     @InjectMocks PostController postController;
     @Mock
     PostService postService;
+    @Mock
+    ResponseHandler responseHandler;
     MockMvc mockMvc;
 
     @BeforeEach
     void beforeEach(){
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(postController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(postController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -50,8 +53,7 @@ public class PostControllerAdviceTest {
 
         //when, then
         performCreate()
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1007));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -61,8 +63,7 @@ public class PostControllerAdviceTest {
 
         //when, then
         performCreate()
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1010));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -72,8 +73,7 @@ public class PostControllerAdviceTest {
 
         //when, then
         performCreate()
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1013));
+                .andExpect(status().isNotFound());
     }
 
 
@@ -101,8 +101,7 @@ public class PostControllerAdviceTest {
         //when, then
         mockMvc.perform(
                 get("/api/posts/{id}",1L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1012));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -113,8 +112,7 @@ public class PostControllerAdviceTest {
         //when, then
         mockMvc.perform(
                 delete("/api/posts/{id}",1L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1012));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -133,7 +131,6 @@ public class PostControllerAdviceTest {
                     return requestPostProcessor;
                 })
                 .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1012));
+                .andExpect(status().isNotFound());
     }
 }

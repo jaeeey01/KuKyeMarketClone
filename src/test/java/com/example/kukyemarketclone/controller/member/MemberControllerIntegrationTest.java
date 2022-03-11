@@ -19,10 +19,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
 
+import static com.example.kukyemarketclone.factory.dto.SignInRequestFactory.createSignInRequest;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)//1
@@ -63,7 +63,7 @@ class MemberControllerIntegrationTest {
     void deleteTest() throws Exception{
         //given
         Member member = memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(MemberNotFoundException::new);
-        SignInResponse signRes = signService.signIn(SignInRequestFactory.createSignInRequest(initDB.getMember1Email(),initDB.getPassword()));
+        SignInResponse signRes = signService.signIn(createSignInRequest(initDB.getMember1Email(),initDB.getPassword()));
 
         //when, then
         mockMvc.perform(
@@ -75,7 +75,7 @@ class MemberControllerIntegrationTest {
     void deleteByAdminTest() throws Exception{
         //given
         Member member = memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(MemberNotFoundException::new);
-        SignInResponse adminSignInRes = signService.signIn(SignInRequestFactory.createSignInRequest(initDB.getAdminEmail(),initDB.getPassword()));
+        SignInResponse adminSignInRes = signService.signIn(createSignInRequest(initDB.getAdminEmail(),initDB.getPassword()));
 
         //when, then
         mockMvc.perform(
@@ -91,8 +91,7 @@ class MemberControllerIntegrationTest {
         //when, then
         mockMvc.perform(
                 delete("/api/members/{id}",member.getId())) //엑세스토큰이 헤더에 포함되어있지 않음 = CustomAuthenticationEntryPoint 작동
-                .andExpect(status().is3xxRedirection())//3xx 상태코드 응답
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
 
     }
 
@@ -100,27 +99,25 @@ class MemberControllerIntegrationTest {
     void deleteAccessDeniedByNotResourceOwnerTest() throws Exception{
         //given
         Member member = memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(MemberNotFoundException::new);
-        SignInResponse signInRes = signService.signIn(SignInRequestFactory.createSignInRequest(initDB.getMember2Email(),initDB.getPassword()));
+        SignInResponse attackerSignInRes = signService.signIn(createSignInRequest(initDB.getMember2Email(), initDB.getPassword()));
 
-        //when,then
-        mockMvc.perform( //남의 자원 접근권한 없음 = CustomAccessDeniedHandler 작동
-                delete("/api/members/{id}",member.getId()).header("Authorization",signInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+        // when, then
+        mockMvc.perform(
+                delete("/api/members/{id}", member.getId()).header("Authorization", attackerSignInRes.getAccessToken()))
+                .andExpect(status().isForbidden());
 
     }
 
     @Test
-    void deleteAccessDeniedByRefreshTokenTest() throws Exception{
+    void deleteUnauthorizedByRefreshTokenTest() throws Exception{
         //given
         Member member= memberRepository.findByEmail(initDB.getMember1Email()).orElseThrow(MemberNotFoundException::new);
-        SignInResponse signInRes = signService.signIn(SignInRequestFactory.createSignInRequest(initDB.getMember1Email(),initDB.getPassword()));
+        SignInResponse signInRes = signService.signIn(createSignInRequest(initDB.getMember1Email(),initDB.getPassword()));
 
         //when, then
         mockMvc.perform(    // 정상 사용자, Refresh 토큰으로 접근시 제한 = CustomAccessDeniedHandler 작동
                 delete("/api/members/{id}",member.getId()).header("Authorization",signInRes.getRefreshToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 }
 

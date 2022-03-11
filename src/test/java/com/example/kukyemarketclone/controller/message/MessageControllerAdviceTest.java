@@ -3,6 +3,7 @@ package com.example.kukyemarketclone.controller.message;
 import com.example.kukyemarketclone.advice.ExceptionAdvice;
 import com.example.kukyemarketclone.dto.message.MessageCreateRequest;
 import com.example.kukyemarketclone.exception.MessageNotFoundException;
+import com.example.kukyemarketclone.handler.ResponseHandler;
 import com.example.kukyemarketclone.service.message.MessageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,8 @@ public class MessageControllerAdviceTest {
     @InjectMocks MessageController messageController;
     @Mock
     MessageService messageService;
+    @Mock
+    ResponseHandler responseHandler;
     MockMvc mockMvc;
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -36,7 +39,7 @@ public class MessageControllerAdviceTest {
     void beforeEach(){
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(messageController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(messageController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -49,8 +52,7 @@ public class MessageControllerAdviceTest {
         mockMvc.perform(
                 get("/api/messages/{id}",id)
         )
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1016));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -65,8 +67,7 @@ public class MessageControllerAdviceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req))
         )
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1016));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -79,8 +80,7 @@ public class MessageControllerAdviceTest {
         mockMvc.perform(
                 delete("/api/messages/sender/{id}",id)
         )
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1016));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -93,8 +93,7 @@ public class MessageControllerAdviceTest {
         mockMvc.perform(
                 delete("/api/messages/receiver/{id}",id)
         )
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1016));
+                .andExpect(status().isNotFound());
     }
 
 

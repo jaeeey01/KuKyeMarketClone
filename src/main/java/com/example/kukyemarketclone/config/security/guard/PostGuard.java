@@ -29,9 +29,11 @@ public class PostGuard extends Guard {//요청자가 관리자 이거나 게시�
 
     @Override
     protected boolean isResourceOwner(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> {throw new AccessDeniedException(""); });
-        Long memberId = AuthHelper.extractMemberId();
-        return post.getMember().getId().equals(memberId);
+        return postRepository.findById(id)
+                .map(post -> post.getMember())
+                .map(member -> member.getId())
+                .filter(memberId -> memberId.equals(AuthHelper.extractMemberId()))
+                .isPresent();
     }
 }
 

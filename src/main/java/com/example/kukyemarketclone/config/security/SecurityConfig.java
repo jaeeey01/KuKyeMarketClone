@@ -1,9 +1,9 @@
 package com.example.kukyemarketclone.config.security;
 
-import com.example.kukyemarketclone.config.token.TokenHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,13 +15,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity //Security 관련 설정과 빈 활성화
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)//메소드 레벨에 Security 설정 활성화 -> 메소드 수행 전후에 권한검사 가능
 public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends 하여 설정작업 수행
 
-    //토큰을 통해 사용자 인증을 위한 JwtAuthenticationFilter에 필요한 의존성
-    private final TokenHelper accessTokenHelper;
-
-    //토큰을 통해 사용자 인증을 위한 JwtAuthenticationFilter에 필요한 의존성
-    //토큰에 저장된 subject(userId)로 사용자 정보 조회 목적
     private final CustomUserDetailsService userDetailsService;
 
     @Override
@@ -29,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
         // security를 무시할 url 지정
         //'/exception'으로 요청이 들어왔을 경우 Spring security를 거치지 않고
         //바로 컨트롤러로 요청이 도달
-        web.ignoring().mvcMatchers("/exception/**","/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**");
+        web.ignoring().mvcMatchers("/swagger-ui/**","/swagger-resources/**","/v3/api-docs/**");
     }
 
     @Override
@@ -41,29 +37,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // extends �
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//세션 유지 안되도록 설정
                 .and()
                     .authorizeRequests() //각 메소드와 URL에 따른 접근 정책 설정
-                        .antMatchers(HttpMethod.POST,"/api/sign-in","/api/sign-up","/api/refresh-token").permitAll()
                         .antMatchers(HttpMethod.GET,"/image/**").permitAll()
-
-
-                            //access 작성 방식 : @<빈이름>.<메소드명>(<인자, #id로하면 URL에 지정한 {id}가 매핑되어서 인자로 들어감>)
-                            //삭제 요청은 본인과 관리자만 수행 가능 : 검증 로직을 수행하기 위해 @memberGuard.check의 반환 결과가 true면 요청 수행
-                        .antMatchers(HttpMethod.DELETE,"/api/members/{id}/**").access("@memberGuard.check(#id)")
+                        .antMatchers(HttpMethod.POST,"/api/sign-in","/api/sign-up","/api/refresh-token").permitAll()
+                        .antMatchers(HttpMethod.DELETE,"/api/members/{id}/**").authenticated()
                         .antMatchers(HttpMethod.POST,"/api/categories/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.DELETE,"/api/categories/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.POST,"/api/posts").authenticated()
-                        .antMatchers(HttpMethod.PUT,"/api/posts/{id}").access("@postGuard.check(#id)")
-                        .antMatchers(HttpMethod.DELETE,"/api/posts/{id}").access("@postGuard.check(#id)")
+                        .antMatchers(HttpMethod.PUT,"/api/posts/{id}").authenticated()
+                        .antMatchers(HttpMethod.DELETE,"/api/posts/{id}").authenticated()
                         .antMatchers(HttpMethod.POST,"/api/comments").authenticated()
-                        .antMatchers(HttpMethod.DELETE,"/api/comments/{id}").access("@commentGuard.check(#id)")
+                        .antMatchers(HttpMethod.DELETE,"/api/comments/{id}").authenticated()
 
                         //쪽지 목록  조회는 memberId의 주입이 필요하므로 인증된 사용자만 가능
                         //쪽지 조회, 삭제는 관리자 또는 자원의 소유자가 가능
                         // 쪽지 생성은 인증된 사용자가 할 수 있음
                         .antMatchers(HttpMethod.GET,"/api/messages/sender", "/api/messages/receiver").authenticated()
-                        .antMatchers(HttpMethod.GET,"/api/messages/{id}").access("@messageGuard.check(#id)")
+                        .antMatchers(HttpMethod.GET,"/api/messages/{id}").authenticated()
                         .antMatchers(HttpMethod.POST,"/api/messages").authenticated()
-                        .antMatchers(HttpMethod.DELETE,"/api/messages/sender/{id}").access("@messageSenderGuard.check(#id)")
-                        .antMatchers(HttpMethod.DELETE,"/api/messages/receiver/{id}").access("@messageReceiverGuard.check(#id)")
+                        .antMatchers(HttpMethod.DELETE,"/api/messages/sender/{id}").authenticated()
+                        .antMatchers(HttpMethod.DELETE,"/api/messages/receiver/{id}").authenticated()
 
                         .antMatchers(HttpMethod.GET,"/api/**").permitAll()//주의 :::: 구체적인 것이 앞서 등록되야함
                         .anyRequest().hasAnyRole("ADMIN")

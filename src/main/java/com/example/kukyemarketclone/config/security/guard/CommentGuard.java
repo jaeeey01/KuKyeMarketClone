@@ -1,10 +1,8 @@
 package com.example.kukyemarketclone.config.security.guard;
 
-import com.example.kukyemarketclone.entity.comment.Comment;
 import com.example.kukyemarketclone.entity.member.RoleType;
 import com.example.kukyemarketclone.repository.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +22,10 @@ public class CommentGuard extends Guard {
 
     @Override
     protected boolean isResourceOwner(Long id) {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> {throw new AccessDeniedException(""); });
-        Long memberId = AuthHelper.extractMemberId();
-        return comment.getMember().getId().equals(memberId);
+       return commentRepository.findById(id)
+               .map(comment -> comment.getMember())
+               .map(member -> member.getId())
+               .filter(memberId ->memberId.equals(AuthHelper.extractMemberId()))
+               .isPresent();
     }
 }
